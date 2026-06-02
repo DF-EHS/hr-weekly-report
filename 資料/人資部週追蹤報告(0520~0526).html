@@ -1,0 +1,1208 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HR 工作日誌報告系統</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Segoe UI", "Microsoft JhengHei", Arial, sans-serif;
+      background: #f0f2f5;
+      color: #333;
+      min-height: 100vh;
+    }
+
+    /* ── 頂部 Header ── */
+    .page-header {
+      background: linear-gradient(135deg, #0d3b52 0%, #1a6e8a 55%, #2596be 100%);
+      color: #fff;
+      padding: 24px 40px 0;
+      box-shadow: 0 3px 16px rgba(0,0,0,.22);
+    }
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      flex-wrap: wrap;
+      gap: 12px;
+      padding-bottom: 18px;
+    }
+    .header-top h1 { font-size: 1.65rem; font-weight: 700; letter-spacing: .04em; }
+    .header-meta {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 4px;
+      font-size: .82rem;
+      opacity: .85;
+    }
+    .week-badge {
+      background: rgba(255,255,255,.18);
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: .88rem;
+    }
+
+    /* ── Tab 導覽列 ── */
+    .tab-nav {
+      display: flex;
+      gap: 0;
+      margin-top: 0;
+    }
+    .tab-btn {
+      padding: 12px 32px;
+      background: transparent;
+      border: none;
+      color: rgba(255,255,255,.65);
+      font-size: .95rem;
+      font-weight: 600;
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      transition: color .15s, border-color .15s;
+      font-family: inherit;
+      letter-spacing: .02em;
+    }
+    .tab-btn:hover { color: rgba(255,255,255,.9); }
+    .tab-btn.active {
+      color: #fff;
+      border-bottom-color: #fff;
+    }
+
+    /* ── 主容器 ── */
+    .container {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 32px 24px 64px;
+    }
+
+    /* ── Tab 面板 ── */
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* ── 區塊標題 ── */
+    .section-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #0d3b52;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #cde0ea;
+    }
+
+    /* ── 評分備註 ── */
+    .score-note {
+      background: #f4fafe;
+      border: 1px solid #c8dce8;
+      border-left: 4px solid #2596be;
+      border-radius: 8px;
+      padding: 11px 16px;
+      margin-bottom: 24px;
+      font-size: .82rem;
+      color: #555;
+      line-height: 1.7;
+    }
+    .score-note strong { color: #0d3b52; }
+
+    /* 週期備註 */
+    .week-range-note {
+      font-size: .78rem;
+      font-weight: 400;
+      color: #5a8fa0;
+      margin-left: 10px;
+      background: #e8f4f8;
+      padding: 2px 10px;
+      border-radius: 12px;
+      vertical-align: middle;
+      letter-spacing: .01em;
+    }
+
+    /* ════════════════════════════════
+       週彙整 Tab 樣式
+    ════════════════════════════════ */
+
+    /* 概覽卡片列 */
+    .overview-row {
+      display: flex;
+      gap: 14px;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+    }
+    .overview-card {
+      flex: 1;
+      min-width: 120px;
+      background: #fff;
+      border-radius: 14px;
+      padding: 18px 20px;
+      text-align: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,.07);
+      border-top: 4px solid #cde0ea;
+    }
+    .overview-card.big { flex: 2; border-top-color: #2596be; }
+    .overview-card.ov-green  { border-top-color: #28a745; }
+    .overview-card.ov-yellow { border-top-color: #e6a800; }
+    .overview-card.ov-red    { border-top-color: #dc3545; }
+    .overview-card.ov-none   { border-top-color: #adb5bd; }
+    .overview-card .num {
+      font-size: 2.4rem; font-weight: 800; line-height: 1; color: #0d3b52;
+    }
+    .overview-card.big .num { font-size: 2.8rem; }
+    .overview-card.ov-green  .num { color: #28a745; }
+    .overview-card.ov-yellow .num { color: #c99000; }
+    .overview-card.ov-red    .num { color: #dc3545; }
+    .overview-card.ov-none   .num { color: #adb5bd; }
+    .overview-card .lbl {
+      margin-top: 8px; font-size: .82rem; color: #666; font-weight: 600;
+    }
+
+    /* 成員卡片格線 */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+
+    /* 成員週報卡片 */
+    .member-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 24px 24px 20px;
+      box-shadow: 0 3px 14px rgba(0,0,0,.08);
+      border-top: 5px solid #cde0ea;
+      transition: transform .15s, box-shadow .15s;
+    }
+    .member-card:hover { transform: translateY(-3px); box-shadow: 0 8px 22px rgba(0,0,0,.12); }
+    .member-card.rag-green  { border-top-color: #28a745; }
+    .member-card.rag-yellow { border-top-color: #e6a800; }
+    .member-card.rag-red    { border-top-color: #dc3545; }
+    .member-card.rag-none   { border-top-color: #adb5bd; opacity: .72; }
+
+    .card-header {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 18px;
+    }
+    .rag-pill {
+      display: inline-block; padding: 4px 12px; border-radius: 20px;
+      font-size: .78rem; font-weight: 700; color: #fff; white-space: nowrap;
+    }
+    .rate-row { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+    .rate-num { font-size: 2.8rem; font-weight: 800; line-height: 1; }
+    .rate-meta { display: flex; flex-direction: column; gap: 3px; }
+    .rate-label { font-size: .78rem; color: #555; font-weight: 600; }
+    .rate-days  { font-size: .74rem; color: #999; }
+    .progress-track {
+      background: #e9ecef; border-radius: 6px; height: 7px; margin-bottom: 18px; overflow: hidden;
+    }
+    .progress-fill { height: 100%; border-radius: 6px; transition: width .5s ease; }
+    .divider { border: none; border-top: 1px solid #eef2f0; margin-bottom: 12px; }
+    .bullets-label {
+      font-size: .76rem; font-weight: 700; color: #0d3b52;
+      margin-bottom: 9px; text-transform: uppercase; letter-spacing: .05em;
+    }
+    .bullet-list { list-style: none; padding: 0; margin: 0; }
+    .bullet-list li {
+      position: relative; padding: 5px 0 5px 18px;
+      font-size: .87rem; line-height: 1.55; color: #444;
+      border-bottom: 1px dashed #eef2f0;
+    }
+    .bullet-list li:last-child { border-bottom: none; }
+    .bullet-list li::before {
+      content: '▸'; position: absolute; left: 0; top: 5px;
+      color: #2596be; font-size: .8rem;
+    }
+    .no-data-msg {
+      text-align: center; padding: 40px 0 24px; color: #bbb;
+      font-size: .92rem; letter-spacing: .02em;
+    }
+
+    /* ════════════════════════════════
+       日誌明細 Tab 樣式
+    ════════════════════════════════ */
+
+    .summary-row {
+      display: flex; gap: 14px; margin-bottom: 28px; flex-wrap: wrap;
+    }
+    .summary-card {
+      flex: 1; min-width: 130px; background: #fff;
+      border-radius: 12px; padding: 18px 22px; text-align: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,.07); border-top: 4px solid #c8d6ea;
+    }
+    .summary-card.green  { border-top-color: #28a745; }
+    .summary-card.yellow { border-top-color: #ffc107; }
+    .summary-card.red    { border-top-color: #dc3545; }
+    .summary-card .snum {
+      font-size: 2.2rem; font-weight: 800; line-height: 1; color: #0d3b52;
+    }
+    .summary-card.green  .snum { color: #28a745; }
+    .summary-card.yellow .snum { color: #c99000; }
+    .summary-card.red    .snum { color: #dc3545; }
+    .summary-card .slbl { margin-top: 8px; font-size: .83rem; color: #666; font-weight: 600; }
+
+    /* 成員統計卡片（日誌明細頁） */
+    .stats-row { display: flex; gap: 14px; margin-bottom: 28px; flex-wrap: wrap; }
+    .stat-card {
+      flex: 1; min-width: 150px; background: #fff;
+      border-radius: 12px; padding: 20px 22px; text-align: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,.07); border-left: 5px solid #c8d6ea;
+      transition: transform .15s;
+    }
+    .stat-card:hover { transform: translateY(-2px); }
+    .stat-card.card-green  { border-left-color: #28a745; }
+    .stat-card.card-yellow { border-left-color: #ffc107; }
+    .stat-card.card-red    { border-left-color: #dc3545; }
+    .stat-card.card-empty  { border-left-color: #adb5bd; opacity: .65; }
+    .stat-card .stat-name { font-size: .95rem; font-weight: 700; color: #0d3b52; }
+    .stat-card .stat-rate { font-size: 1.9rem; font-weight: 800; margin: 8px 0 4px; color: #333; }
+    .stat-card .stat-desc { font-size: .78rem; color: #888; }
+
+    /* 表格 */
+    .table-wrap {
+      background: #fff; border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.07); overflow: hidden;
+    }
+    table { width: 100%; border-collapse: collapse; }
+    thead tr { background: #0d3b52; color: #fff; }
+    thead th {
+      padding: 12px 14px; text-align: left;
+      font-size: .84rem; font-weight: 600; letter-spacing: .03em; white-space: nowrap;
+    }
+    tbody tr { border-bottom: 1px solid #eef1f6; transition: background .12s; }
+    tbody tr:hover { background: #f5f8ff; }
+    tbody tr:last-child { border-bottom: none; }
+    tbody td { padding: 12px 14px; font-size: .87rem; vertical-align: middle; }
+
+    /* 成員標籤 */
+    .member-tag {
+      display: inline-block; padding: 3px 10px;
+      border-radius: 20px; font-size: .8rem; font-weight: 700; color: #fff;
+    }
+    .member-bella   { background: #7b5ea7; }
+    .member-an      { background: #2a7dd9; }
+    .member-gloom   { background: #e07b39; }
+    .member-陳信佳  { background: #1a8c6e; }
+    .member-賴柏羽  { background: #c0392b; }
+    .member-chiehyi { background: #6c757d; }
+
+    .summary-cell { max-width: 300px; line-height: 1.5; color: #444; }
+
+    .progress-bar-wrap {
+      position: relative; background: #e9ecef; border-radius: 6px;
+      height: 18px; width: 110px; overflow: hidden;
+    }
+    .progress-bar-fill { height: 100%; border-radius: 6px; transition: width .4s ease; }
+    .progress-label {
+      position: absolute; right: 6px; top: 50%; transform: translateY(-50%);
+      font-size: .7rem; font-weight: 700; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,.4);
+    }
+
+    .rag-badge {
+      display: inline-block; padding: 4px 10px; border-radius: 20px;
+      font-size: .77rem; font-weight: 700; color: #fff; white-space: nowrap;
+    }
+
+    .no-data { text-align: center; padding: 36px !important; color: #999; font-size: .92rem; }
+
+    /* ── 頁尾 ── */
+    .page-footer {
+      text-align: center; margin-top: 40px; font-size: .79rem; color: #aaa;
+    }
+
+    /* ── 響應式 ── */
+    @media (max-width: 768px) {
+      .page-header { padding: 18px 16px 0; }
+      .tab-btn { padding: 10px 18px; font-size: .88rem; }
+      .container { padding: 22px 14px 48px; }
+      .overview-card.big { flex: 100%; }
+      .cards-grid { grid-template-columns: 1fr; }
+    }
+    /* ════════════════════════════════
+       週追蹤報告 Tab 樣式
+    ════════════════════════════════ */
+    .tracker-stats-bar {
+      display: flex; flex-wrap: wrap; gap: 10px;
+      margin-bottom: 24px;
+    }
+    .tracker-chip {
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 18px; border-radius: 50px;
+      font-size: .88rem; font-weight: 600;
+      box-shadow: 0 1px 4px rgba(0,0,0,.1);
+    }
+    .tc-total  { background: #e9ecef; color: #495057; }
+    .tc-done   { background: #d4edda; color: #1a8c6e; border: 1.5px solid #1a8c6e; }
+    .tc-green  { background: #d4edda; color: #28a745; border: 1.5px solid #28a745; }
+    .tc-yellow { background: #fff3cd; color: #856404; border: 1.5px solid #e6a800; }
+    .tc-red    { background: #f8d7da; color: #842029; border: 1.5px solid #dc3545; }
+    .tc-none   { background: #f8f9fa; color: #6c757d; border: 1.5px dashed #adb5bd; }
+    .tc-num { font-size: 1.2rem; line-height: 1; }
+
+    .tracker-legend {
+      display: flex; flex-wrap: wrap; gap: 10px;
+      margin-bottom: 20px; font-size: .8rem; color: #6c757d;
+      align-items: center;
+    }
+    .tracker-legend strong { margin-right: 6px; }
+    .tleg-item { display: flex; align-items: center; gap: 5px; }
+    .tleg-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+    .tracker-table-wrap { overflow-x: auto; }
+    .tracker-tbl {
+      width: 100%; min-width: 980px; border-collapse: collapse;
+      background: #fff; border-radius: 10px; overflow: hidden;
+      box-shadow: 0 2px 12px rgba(0,0,0,.08);
+    }
+    .tracker-tbl thead tr { background: #1a2a4a; color: #fff; }
+    .tracker-tbl th {
+      padding: 12px 13px; font-size: .82rem; font-weight: 600;
+      text-align: left; letter-spacing: .04em; white-space: nowrap;
+      border-right: 1px solid rgba(255,255,255,.1);
+    }
+    .tracker-tbl th:last-child { border-right: none; }
+    .tracker-tbl td {
+      padding: 11px 13px; font-size: .83rem; line-height: 1.5;
+      border-bottom: 1px solid #e9ecef; border-right: 1px solid #f0f2f5;
+      vertical-align: top;
+    }
+    .tracker-tbl td:last-child { border-right: none; }
+    .tracker-tbl tr:last-child td { border-bottom: none; }
+
+    .tbl-cat-cell {
+      background: #f8f9fa !important; border-right: 3px solid #dee2e6 !important;
+      vertical-align: middle !important; text-align: center;
+    }
+    .tbl-cat-label {
+      display: inline-block; font-weight: 700; font-size: .87rem;
+      color: #1a2a4a; background: #e9ecef; border-radius: 6px;
+      padding: 6px 10px; word-break: keep-all; line-height: 1.4;
+    }
+
+    .trow-done   { background: #f0fff4; }
+    .trow-green  { background: #f8fff9; }
+    .trow-yellow { background: #fffdf0; }
+    .trow-red    { background: #fff8f8; }
+    .trow-none   { background: #fafafa; }
+    .tracker-tbl tbody tr:hover td { filter: brightness(.97); }
+
+    .owner-bdg {
+      display: inline-block; padding: 3px 10px; border-radius: 50px;
+      font-size: .78rem; font-weight: 600; color: #fff; white-space: nowrap;
+    }
+    .tbl-rag-badge {
+      display: inline-block; padding: 4px 10px; border-radius: 50px;
+      font-size: .78rem; font-weight: 600; color: #fff; white-space: nowrap;
+    }
+    .tbl-rate-wrap {
+      position: relative; height: 22px; background: #e9ecef;
+      border-radius: 4px; overflow: hidden; min-width: 80px;
+    }
+    .tbl-rate-bar  { height: 100%; border-radius: 4px; }
+    .tbl-rate-lbl {
+      position: absolute; right: 6px; top: 50%; transform: translateY(-50%);
+      font-size: .78rem; font-weight: 700; color: #fff;
+      text-shadow: 0 1px 2px rgba(0,0,0,.4); pointer-events: none;
+    }
+    .tbl-blocker { color: #c0392b; font-size: .8rem; font-weight: 600; }
+    .tbl-no-blocker { color: #adb5bd; font-size: .8rem; }
+    .tbl-no-data { text-align: center; padding: 40px; color: #adb5bd; font-style: italic; }
+    /* 追蹤報告達成率進度條 */
+    .rate-wrap {
+      position: relative; height: 22px; background: #e9ecef;
+      border-radius: 4px; overflow: visible; min-width: 80px;
+    }
+    .rate-bar { position: absolute; top: 0; left: 0; height: 100%; border-radius: 4px; transition: width .3s, background .3s; }
+    .rate-input {
+      position: absolute; right: 4px; top: 50%; transform: translateY(-50%);
+      width: 36px; border: none; background: transparent;
+      font-size: .78rem; font-weight: 700; color: #333;
+      text-align: right; outline: none; cursor: text; z-index: 1;
+      -moz-appearance: textfield;
+    }
+    .rate-input::-webkit-outer-spin-button,
+    .rate-input::-webkit-inner-spin-button { -webkit-appearance: none; }
+    .rate-input:focus { background: rgba(255,255,255,.15); border-radius: 3px; }
+    /* Excel 匯出按鈕 */
+    .export-btn {
+      display: inline-block; padding: 10px 22px; border-radius: 8px;
+      background: linear-gradient(135deg, #1a6fbd, #0d4f8c);
+      color: #fff; font-size: .95rem; font-weight: 600;
+      text-decoration: none; cursor: pointer;
+      box-shadow: 0 3px 8px rgba(13,79,140,.35);
+      transition: transform .15s, box-shadow .15s;
+    }
+    .export-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 14px rgba(13,79,140,.45); }
+    .export-btn:active { transform: translateY(0); }
+    .export-btn-disabled {
+      background: #adb5bd; box-shadow: none; cursor: default; pointer-events: none;
+    }
+    /* export-bar 佈局 */
+    .export-bar { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-bottom: 20px; }
+    /* HTML 下載按鈕 */
+    .html-btn {
+      display: inline-block; padding: 10px 22px; border-radius: 8px;
+      background: linear-gradient(135deg, #1a8c6e, #0d6651);
+      color: #fff; font-size: .95rem; font-weight: 600;
+      border: none; cursor: pointer;
+      box-shadow: 0 3px 8px rgba(13,102,81,.35);
+      transition: transform .15s, box-shadow .15s;
+    }
+    .html-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 14px rgba(13,102,81,.45); }
+    .html-btn:active { transform: translateY(0); }  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <div class="page-header">
+    <div class="header-top">
+      <h1>📋 HR 工作日誌報告系統</h1>
+      <div class="header-meta">
+        <span class="week-badge">📅 2026/05/20（三） ~ 2026/05/26（二）</span>
+        <span>產生時間：2026-05-28 18:44</span>
+      </div>
+    </div>
+    <!-- Tab 導覽 -->
+    <div class="tab-nav">
+      <button class="tab-btn active" onclick="showTab('daily', this)">&#128203; 日誌明細</button>
+      <button class="tab-btn" onclick="showTab('weekly', this)">&#128202; 週彙整</button>
+      <button class="tab-btn" onclick="showTab('tracker', this)">&#128269; 人資部週追蹤報告</button>
+    </div>
+  </div>
+
+  <div class="container">
+
+    <!-- ══════════ 日誌明細 Tab ══════════ -->
+    <div id="tab-daily" class="tab-panel active">
+
+      <!-- 評分備註 -->
+      <div class="score-note">
+        💡 <strong>達成率評分說明：</strong>以下百分比由 Gemini AI 依據每封日誌內容自動評估，評分維度包含：<strong>AI 工具實際使用情況</strong>、工作任務完成度、產出具體程度。若日誌中記錄 AI 使用場景較少或以「觀望期」描述，評分會相對偏低。
+      </div>
+
+      <!-- 摘要數字 -->
+      <p class="section-title">日誌概覽（05/20 起）</p>
+      <div class="summary-row">
+        <div class="summary-card">
+          <div class="snum">21</div>
+          <div class="slbl">總日誌數</div>
+        </div>
+        <div class="summary-card green">
+          <div class="snum">19</div>
+          <div class="slbl">🟢 已達成</div>
+        </div>
+        <div class="summary-card yellow">
+          <div class="snum">0</div>
+          <div class="slbl">🟡 部分達成</div>
+        </div>
+        <div class="summary-card red">
+          <div class="snum">2</div>
+          <div class="slbl">🔴 待改善</div>
+        </div>
+      </div>
+
+      <!-- 成員達成概況 -->
+      <p class="section-title">成員達成概況</p>
+      <div class="stats-row">
+                <div class="stat-card card-green">
+          <div class="stat-name">Bella</div>
+          <div class="stat-rate">80%</div>
+          <div class="stat-desc">4 筆日誌</div>
+        </div>
+        <div class="stat-card card-green">
+          <div class="stat-name">An</div>
+          <div class="stat-rate">83%</div>
+          <div class="stat-desc">5 筆日誌</div>
+        </div>
+        <div class="stat-card card-green">
+          <div class="stat-name">Gloom</div>
+          <div class="stat-rate">82%</div>
+          <div class="stat-desc">3 筆日誌</div>
+        </div>
+        <div class="stat-card card-empty">
+          <div class="stat-name">陳信佳</div>
+          <div class="stat-rate">0%</div>
+          <div class="stat-desc">尚無資料</div>
+        </div>
+        <div class="stat-card card-red">
+          <div class="stat-name">賴柏羽</div>
+          <div class="stat-rate">24%</div>
+          <div class="stat-desc">2 筆日誌</div>
+        </div>
+        <div class="stat-card card-yellow">
+          <div class="stat-name">Chiehyi</div>
+          <div class="stat-rate">77%</div>
+          <div class="stat-desc">7 筆日誌</div>
+        </div>
+      </div>
+
+      <!-- 日誌明細表格 -->
+      <p class="section-title">日誌明細</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>成員</th>
+              <th>日期</th>
+              <th>成果摘要</th>
+              <th>達成率</th>
+            </tr>
+          </thead>
+          <tbody>
+                      <tr>
+            <td>1</td>
+            <td><span class="member-tag member-chiehyi">Chiehyi</span></td>
+            <td>2026-05-28</td>
+            <td class="summary-cell">今日完成多項文件與報告處理，包括獎金分析、週追蹤報告及大豐環保策略分析等。AI 工具應用與數位轉型職能評分皆為觀望期，建議多嘗試將重複工作交由 AI 處理。</td>
+            <td>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width:69%;background:#28a745"></div>
+                <span class="progress-label">69%</span>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td><span class="member-tag member-賴柏羽">賴柏羽</span></td>
+            <td>2026-05-28</td>
+            <td class="summary-cell">今日主要進行文件修改，無AI使用記錄，AI能力認證考核總分為12/50，處於觀望期。</td>
+            <td>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width:24%;background:#dc3545"></div>
+                <span class="progress-label">24%</span>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td><span class="member-tag member-賴柏羽">賴柏羽</span></td>
+            <td>2026-05-28</td>
+            <td class="summary-cell">今日主要進行文件修改，無AI使用記錄，AI能力認證考核總分12/50，處於觀望期。</td>
+            <td>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width:24%;background:#dc3545"></div>
+                <span class="progress-label">24%</span>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td><span class="member-tag member-bella">Bella</span></td>
+            <td>2026-05-27</td>
+            <td class="summary-cell">今日完成出勤異常通知排程修正、健保資料單一公司下載驗證、全興廠薪資結構調整試算、例假日加班模板建立及團保人數查核，多項專案進度良好。</td>
+            <td>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width:85%;background:#28a745"></div>
+                <span class="progress-label">85%</span>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>5</td>
+            <td><span class="member-tag member-an">An</span></td>
+            <td>2026-05-27</td>
+            <td class="summary-cell">完成每日出勤總表自動化腳本升級、召募達成率報表更新、出勤總表離職頁簽刷新、五股FB刊登職缺彙整及ATS API權限整合等主要工作。</td>
+            <td>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width:85%;background:#28a745"></div>
+                <span class="progress-label">85%</span>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>6</td>
+            <td><span class="member-tag member-gloom">Gloom</span></td>
+            <td>2026-05-27</td>
+            <td class="summary-cell">今日主要完成職安相關的圖像生成、網站部署與功能調整，並進行自動情報收集的初步規劃。部分功能仍待優化與確認。</td>
+            <td>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width:75%;background:#28a745"></div>
+                <span class="progress-label">75%</span>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>7</td>
+            <td><span class="member-tag member-chiehyi">Chiehyi</span></td>
+            <td>2026-05-27</td>
+            <td class="summary-cell">今日完成獎金分析、Agents-人力變化及大豐環保策略分析等三項工作，並處理多份文件與程式碼，但AI工具應用與數位轉型職能評分較低。</td>
+            <td>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width:80%;background:#28a745"></div>
+                <span class="progress-label">80%</span>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>8</td>
+            <td><span class="member-tag member-an">An</span></td>
+            <td>2026-05-26</td>
+            <td class="summary-cell">完成ATS履歷統計腳本擴充、健檢報告整理與工安自動化規劃、KM腳本重構驗證及FB Page Token申請收尾。</td>
+            <td>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width:85%;background:#28a745"></div>
+                <span class="progress-label">85%</span>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>9</td>
+            <td><span class="member-tag member-bella">Bella</span></td>
+            <td>2026-05-26</td>
+            <td class="summary-cell">今日完成人評會報告範本改版、4月勞健保檔案整理與健保下載腳本開發，並試算全興廠調薪計畫。部分項目待修正或擴展。</td>
+            <td>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width:75%;background:#28a745"></div>
+                <span class="progress-label">75%</span>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>10</td>
+            <td><span class="member-tag member-gloom">Gloom</span></td>
+            <td>2026-05-26</td>
+            <td class="summary-cell">完成職安互動網站架構設計、職災原因分析、法規鑑別與風險評估系統更新，並啟動承攬商線上系統開發。</td>
+            <td>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width:85%;background:#28a745"></div>
+                <span class="progress-label">85%</span>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>11</td>
+            <td><span class="member-tag member-chiehyi">Chiehyi</span></td>
+            <td>2026-05-26</td>
+            <td class="summary-cell">今日完成獎金分析、員工人數與出勤更新、大豐環保策略分析等三項主要工作，並產出多份文件與報告。</td>
+            <td>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width:76%;background:#28a745"></div>
+                <span class="progress-label">76%</span>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>12</td>
+            <td><span class="member-tag member-an">An</span></td>
+            <td>2026-05-25</td>
+            <td class="summary-cell">完成 FB Messenger Page Access Token SOP 指引，並新建 ATS 履歷預約統計腳本，目前正在執行中。</td>
+            <td>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width:90%;background:#28a745"></div>
+                <span class="progress-label">90%</span>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>13</td>
+            <td><span class="member-tag member-bella">Bella</span></td>
+            <td>2026-05-25</td>
+            <td class="summary-cell">完成勞健保費用彙整自動化、日報腳本維護、全興廠調薪計畫試算及企業內訓平台 Replit 遷移前置作業。</td>
+            <td>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width:85%;background:#28a745"></div>
+                <span class="progress-label">85%</span>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>14</td>
+            <td><span class="member-tag member-chiehyi">Chiehyi</span></td>
+            <td>2026-05-25</td>
+            <td class="summary-cell">今日無AI使用記錄，AI能力認證考核總分為12/50，處於觀望期，建議嘗試將重複工作交由AI處理。</td>
+            <td>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width:83%;background:#28a745"></div>
+                <span class="progress-label">83%</span>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>15</td>
+            <td><span class="member-tag member-chiehyi">Chiehyi</span></td>
+            <td>2026-05-22</td>
+            <td class="summary-cell">今日主要完成AI自動化腳本連接HTML修正、Agents-人力變化HTML問題，並進行大豐環保策略分析相關工作，產出多份HTML文件。</td>
+            <td>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width:69%;background:#28a745"></div>
+                <span class="progress-label">69%</span>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>16</td>
+            <td><span class="member-tag member-an">An</span></td>
+            <td>2026-05-22</td>
+            <td class="summary-cell">完成FB Messenger token申請指引、准員工PDF打包下載endpoint探勘、履歷篩選規則庫放寬與歷史重篩、ATS職缺迴歸測試及新職缺規則補齊，但FB token仍未成功驗證。</td>
+            <td>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width:85%;background:#28a745"></div>
+                <span class="progress-label">85%</span>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>17</td>
+            <td><span class="member-tag member-chiehyi">Chiehyi</span></td>
+            <td>2026-05-21</td>
+            <td class="summary-cell">今日完成多項AI自動化腳本開發、獎金分析與EPS計算調整、員工人數整理及大豐環保策略分析等工作，並產出多份文件與程式碼。</td>
+            <td>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width:83%;background:#28a745"></div>
+                <span class="progress-label">83%</span>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>18</td>
+            <td><span class="member-tag member-chiehyi">Chiehyi</span></td>
+            <td>2026-05-20</td>
+            <td class="summary-cell">已完成獎金分析的EPS計算調整至8元，並定義了5-8元區間的分配比例及貢獻者權重。待完成主要貢獻者每人平均加權計算。</td>
+            <td>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width:78%;background:#28a745"></div>
+                <span class="progress-label">78%</span>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>19</td>
+            <td><span class="member-tag member-an">An</span></td>
+            <td>2026-05-28</td>
+            <td class="summary-cell">完成新進人員體檢報告自動寄工安專案最終定版與排程，並進行招募管理系統本地開發環境建置，但伺服器重啟失敗待排查。</td>
+            <td>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width:70%;background:#28a745"></div>
+                <span class="progress-label">70%</span>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>20</td>
+            <td><span class="member-tag member-bella">Bella</span></td>
+            <td>2026-05-28</td>
+            <td class="summary-cell">今日完成出勤異常通知腳本維護、薪資結算比對腳本規劃與設計、全興廠薪資試算、企業內訓平台Git初始化及證照通知功能開發。</td>
+            <td>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width:75%;background:#28a745"></div>
+                <span class="progress-label">75%</span>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>21</td>
+            <td><span class="member-tag member-gloom">Gloom</span></td>
+            <td>2026-05-28</td>
+            <td class="summary-cell">今日主要完成職安相關任務，包含製作海報、計算工作天數、GitHub Pages更新與問題排除，並探索AI應用於職安領域。</td>
+            <td>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width:85%;background:#28a745"></div>
+                <span class="progress-label">85%</span>
+              </div>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div><!-- /tab-daily -->
+
+    <!-- ══════════ 週彙整 Tab ══════════ -->
+    <div id="tab-weekly" class="tab-panel">
+
+      <!-- 評分備註 -->
+      <div class="score-note">
+        💡 <strong>達成率評分說明：</strong>以上百分比由 Gemini AI 依據週內所有日誌內容綜合評估，評分維度包含：<strong>AI 工具實際使用情況</strong>、工作任務完成度、產出具體程度。若日誌中記錄 AI 使用場景較少或以「觀望期」描述，評分會相對偏低。
+      </div>
+
+      <!-- 團隊概覽 -->
+      <p class="section-title">團隊本週概覽 <span class="week-range-note">2026/05/20（三） ~ 2026/05/26（二）</span></p>
+      <div class="overview-row">
+        <div class="overview-card big">
+          <div class="num" style="color:#28a745">82%</div>
+          <div class="lbl">團隊週平均達成率</div>
+        </div>
+        <div class="overview-card ov-green">
+          <div class="num">4</div>
+          <div class="lbl">🟢 達成</div>
+        </div>
+        <div class="overview-card ov-red">
+          <div class="num">0</div>
+          <div class="lbl">🔴 待改善</div>
+        </div>
+        <div class="overview-card ov-none">
+          <div class="num">2</div>
+          <div class="lbl">⚪ 無資料</div>
+        </div>
+      </div>
+
+      <!-- 成員週報摘要 -->
+      <p class="section-title">成員週報摘要（共 6 人）<span class="week-range-note">2026/05/20（三） ~ 2026/05/26（二）</span></p>
+      <div class="cards-grid">
+              <div class="member-card rag-green">
+        <div class="card-header">
+          <span class="member-tag" style="background:#7b5ea7">Bella</span>
+          <span class="rag-pill" style="background:#28a745">🟢 達成</span>
+        </div>
+        <div class="rate-row">
+          <div class="rate-num" style="color:#28a745">80%</div>
+          <div class="rate-meta">
+            <div class="rate-label">週平均達成率</div>
+            <div class="rate-days">2 天日誌</div>
+          </div>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" style="width:80%;background:#28a745"></div>
+        </div>
+        <div class="divider"></div>
+        <div class="bullets-label">📌 本週核心工作</div>
+        <ul class="bullet-list">
+        <li>推進勞健保自動化，完成4月份資料分類彙整與健保下載腳本開發，提升作業效率。</li>
+        <li>完成人評會晉升報告範本改版，導入AI評核標準，並優化報告內容與格式。</li>
+        <li>試算全興廠作業員調薪計畫，產出薪資結構調整對比表，協助主管評估決策。</li>
+        </ul>
+      </div>
+      <div class="member-card rag-green">
+        <div class="card-header">
+          <span class="member-tag" style="background:#2a7dd9">An</span>
+          <span class="rag-pill" style="background:#28a745">🟢 達成</span>
+        </div>
+        <div class="rate-row">
+          <div class="rate-num" style="color:#28a745">87%</div>
+          <div class="rate-meta">
+            <div class="rate-label">週平均達成率</div>
+            <div class="rate-days">3 天日誌</div>
+          </div>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" style="width:87%;background:#28a745"></div>
+        </div>
+        <div class="divider"></div>
+        <div class="bullets-label">📌 本週核心工作</div>
+        <ul class="bullet-list">
+        <li>大幅擴充 ATS 履歷預約統計腳本，整合多種來源與待報到/待面試名單，並加入全管道彙整功能。</li>
+        <li>重構「下載已報到員工資料到 KM」腳本為 zip 模式，並成功驗證單人測試，待 API 權限補齊即可上線。</li>
+        <li>積極處理 ATS API Key 權限問題，並持續追蹤 FB Page Token 申請，以解除多項自動化排程的技術阻礙。</li>
+        </ul>
+      </div>
+      <div class="member-card rag-green">
+        <div class="card-header">
+          <span class="member-tag" style="background:#e07b39">Gloom</span>
+          <span class="rag-pill" style="background:#28a745">🟢 達成</span>
+        </div>
+        <div class="rate-row">
+          <div class="rate-num" style="color:#28a745">85%</div>
+          <div class="rate-meta">
+            <div class="rate-label">週平均達成率</div>
+            <div class="rate-days">1 天日誌</div>
+          </div>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" style="width:85%;background:#28a745"></div>
+        </div>
+        <div class="divider"></div>
+        <div class="bullets-label">📌 本週核心工作</div>
+        <ul class="bullet-list">
+        <li>持續優化職安相關互動式網站，包含法規鑑別、風險評估與危害鑑別，並新增承攬商線上化系統。</li>
+        <li>完成全興廠職安與消防法規鑑別，並依規範生成新版 Excel 檔案，確保資料即時性與準確性。</li>
+        <li>運用 AI 工具進行職災原因分析、道安宣導漫畫修正，並探索 AI 於職安領域的應用潛力。</li>
+        </ul>
+      </div>
+      <div class="member-card rag-none">
+        <div class="card-header">
+          <span class="member-tag" style="background:#1a8c6e">陳信佳</span>
+          <span class="rag-pill" style="background:#adb5bd">⚪ 無資料</span>
+        </div>
+        <div class="no-data-msg">本週無日誌記錄</div>
+      </div>
+      <div class="member-card rag-none">
+        <div class="card-header">
+          <span class="member-tag" style="background:#c0392b">賴柏羽</span>
+          <span class="rag-pill" style="background:#adb5bd">⚪ 無資料</span>
+        </div>
+        <div class="no-data-msg">本週無日誌記錄</div>
+      </div>
+      <div class="member-card rag-green">
+        <div class="card-header">
+          <span class="member-tag" style="background:#6c757d">Chiehyi</span>
+          <span class="rag-pill" style="background:#28a745">🟢 達成</span>
+        </div>
+        <div class="rate-row">
+          <div class="rate-num" style="color:#28a745">78%</div>
+          <div class="rate-meta">
+            <div class="rate-label">週平均達成率</div>
+            <div class="rate-days">5 天日誌</div>
+          </div>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" style="width:78%;background:#28a745"></div>
+        </div>
+        <div class="divider"></div>
+        <div class="bullets-label">📌 本週核心工作</div>
+        <ul class="bullet-list">
+        <li>持續開發與修正 AI 自動化腳本，特別針對 HTML 連接及溫室氣體排放計算引擎進行優化。</li>
+        <li>深入分析獎金制度，調整 EPS 計算方式並釐清主要貢獻者與協助執行者的獎金分配。</li>
+        <li>積極參與大豐環保策略分析，運用 AI 工具探索市場邊界，並協助建立策略簡報網頁骨架。</li>
+        </ul>
+      </div>
+      </div>
+
+    </div><!-- /tab-weekly -->
+
+    <!-- ══════════ 人資部週追蹤報告 Tab ══════════ -->
+    <div id="tab-tracker" class="tab-panel">
+
+      <!-- 匯出按鈕 -->
+      <div class="export-bar">
+        <a class="export-btn" href="data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,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" download="人資部週追蹤報告(0520~0526).xlsx">&#128229; 匯出本週 Excel 報告</a>
+        <button class="html-btn" onclick="downloadHTML()">&#128190; 下載 HTML 報告</button>
+      </div>
+
+      <!-- 摘要統計列 -->
+      <p class="section-title">項目追蹤概況 <span class="week-range-note">2026/05/20（三） ~ 2026/05/26（二）</span></p>
+      <div class="tracker-stats-bar">
+        <div class="tracker-chip tc-total"><span class="tc-num">13</span> 追蹤項目</div>
+        <div class="tracker-chip tc-done"><span class="tc-num">1</span> ✅ 已完成</div>
+        <div class="tracker-chip tc-green"><span class="tc-num">5</span> 🟢 正常推進</div>
+        <div class="tracker-chip tc-yellow"><span class="tc-num">3</span> 🟡 待改善</div>
+        <div class="tracker-chip tc-red"><span class="tc-num">1</span> 🔴 卡關</div>
+        <div class="tracker-chip tc-none"><span class="tc-num">3</span> ⚪ 本週無資料</div>
+      </div>
+
+      <!-- 燈號說明 -->
+      <div class="tracker-legend">
+        <strong>RAG 說明：</strong>
+        <span class="tleg-item"><span class="tleg-dot" style="background:#1a8c6e"></span>已完成（100%）</span>
+        <span class="tleg-item"><span class="tleg-dot" style="background:#28a745"></span>正常推進（有明確進展）</span>
+        <span class="tleg-item"><span class="tleg-dot" style="background:#e6a800"></span>待改善（進度偏慢）</span>
+        <span class="tleg-item"><span class="tleg-dot" style="background:#dc3545"></span>卡關（需要協助）</span>
+        <span class="tleg-item"><span class="tleg-dot" style="background:#adb5bd"></span>本週無資料</span>
+      </div>
+
+      <!-- 項目追蹤表格 -->
+      <div class="tracker-table-wrap">
+        <table class="tracker-tbl">
+          <colgroup>
+            <col style="width:110px">
+            <col style="width:130px">
+            <col style="width:190px">
+            <col style="width:68px">
+            <col style="width:230px">
+            <col style="width:100px">
+            <col style="width:90px">
+            <col style="width:105px">
+            <col style="width:150px">
+          </colgroup>
+          <thead>
+            <tr>
+              <th>項目名稱</th>
+              <th>預期效益</th>
+              <th>目標</th>
+              <th>負責人</th>
+              <th>本週成果</th>
+              <th>達成率%</th>
+              <th>預計完成日</th>
+              <th>RAG</th>
+              <th>卡關／需求</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="row-done">
+  <td class="cat-cell" rowspan="4"><span class="cat-label">報表自動化</span></td>
+  <td>HR人力4->2名</td>
+  <td class="goal-cell">每月人力效益報表(已完成，持續優化)</td>
+  <td class="owner-cell">婕誼</td>
+  <td class="result-cell">本週無實質進度。</td>
+  <td class="rate-cell"><div class="rate-wrap"><div class="rate-bar" style="width:100%;background:#1a8c6e"></div><input class="rate-input" type="number" min="0" max="100" value="100" oninput="updateRate(this)"></div></td>
+  <td class="deadline-cell">2026/03/31</td>
+  <td class="rag-cell"><span class="rag-badge" style="background:#1a8c6e">✅ 已完成</span></td>
+  <td class="blocker-cell"><span class="no-blocker">—</span></td>
+</tr>
+
+<tr class="row-green">
+  <td>HR人力4->2名</td>
+  <td class="goal-cell">人力變化報表(已完成，持續優化)</td>
+  <td class="owner-cell">婕誼</td>
+  <td class="result-cell">本週持續進行員工人數與出勤資料的更新與整理，並處理了 HTML 報表無法打開的問題，確保資料能正常顯示。</td>
+  <td class="rate-cell"><div class="rate-wrap"><div class="rate-bar" style="width:100%;background:#1a8c6e"></div><input class="rate-input" type="number" min="0" max="100" value="100" oninput="updateRate(this)"></div></td>
+  <td class="deadline-cell">2026/03/31</td>
+  <td class="rag-cell"><span class="rag-badge" style="background:#28a745">🟢 正常推進</span></td>
+  <td class="blocker-cell"><span class="blocker-text">HTML報表無法打開</span></td>
+</tr>
+
+<tr class="row-green">
+  <td>HR人力4->2名</td>
+  <td class="goal-cell">薪資調整變化</td>
+  <td class="owner-cell">婕誼</td>
+  <td class="result-cell">本週主要進行了獎金分析相關工作，包含獎金管理辦法的修改與不同部門獎金準則的調整，並針對 EPS 計算進行了調整。</td>
+  <td class="rate-cell"><div class="rate-wrap"><div class="rate-bar" style="width:20%;background:#dc3545"></div><input class="rate-input" type="number" min="0" max="100" value="20" oninput="updateRate(this)"></div></td>
+  <td class="deadline-cell">2026/06/30</td>
+  <td class="rag-cell"><span class="rag-badge" style="background:#28a745">🟢 正常推進</span></td>
+  <td class="blocker-cell"><span class="no-blocker">—</span></td>
+</tr>
+
+<tr class="row-green">
+  <td>HR人力4->2名</td>
+  <td class="goal-cell">招募效益相關分析</td>
+  <td class="owner-cell">詩紜</td>
+  <td class="result-cell">ATS履歷預約統計腳本已大幅擴充，整合7種來源、待報到/待面試名單、hrrecruit信箱與FB廣告leads，並新增全管道綜合彙整區塊。FB Page Token第四次申請已收尾，等待吳庭妤提供Access Token以啟動五股對話抓取。</td>
+  <td class="rate-cell"><div class="rate-wrap"><div class="rate-bar" style="width:75%;background:#e6a800"></div><input class="rate-input" type="number" min="0" max="100" value="75" oninput="updateRate(this)"></div></td>
+  <td class="deadline-cell">2026/06/30</td>
+  <td class="rag-cell"><span class="rag-badge" style="background:#28a745">🟢 正常推進</span></td>
+  <td class="blocker-cell"><span class="blocker-text">FB Page Token等待吳庭妤提供</span></td>
+</tr>
+
+<tr class="row-yellow">
+  <td class="cat-cell" rowspan="2"><span class="cat-label">人資作業自動化</span></td>
+  <td>HR人力4->2名</td>
+  <td class="goal-cell">新進人員加保、退保自動化</td>
+  <td class="owner-cell">詩紜</td>
+  <td class="result-cell">本週無實質進度。</td>
+  <td class="rate-cell"><div class="rate-wrap"><div class="rate-bar" style="width:0%;background:#dc3545"></div><input class="rate-input" type="number" min="0" max="100" value="0" oninput="updateRate(this)"></div></td>
+  <td class="deadline-cell">2026/07/31</td>
+  <td class="rag-cell"><span class="rag-badge" style="background:#e6a800">🟡 待改善</span></td>
+  <td class="blocker-cell"><span class="no-blocker">—</span></td>
+</tr>
+
+<tr class="row-yellow">
+  <td>HR人力4->2名</td>
+  <td class="goal-cell">投保證明下載自動化</td>
+  <td class="owner-cell">詩紜</td>
+  <td class="result-cell">本週無實質進度。</td>
+  <td class="rate-cell"><div class="rate-wrap"><div class="rate-bar" style="width:0%;background:#dc3545"></div><input class="rate-input" type="number" min="0" max="100" value="0" oninput="updateRate(this)"></div></td>
+  <td class="deadline-cell">2026/07/31</td>
+  <td class="rag-cell"><span class="rag-badge" style="background:#e6a800">🟡 待改善</span></td>
+  <td class="blocker-cell"><span class="no-blocker">—</span></td>
+</tr>
+
+<tr class="row-green">
+  <td class="cat-cell" rowspan="1"><span class="cat-label">加班與作業獎金系統</span></td>
+  <td>外部：每天減少加班單約200-300張(400分-600分)</td>
+  <td class="goal-cell">1.加班作業自動化<br>2.作業獎金評核自動化</td>
+  <td class="owner-cell">Bella</td>
+  <td class="result-cell">本週完成全興廠11名作業員調薪計畫試算，包含月休4天、日工12小時（含3小時加班）的薪資結構，並產出前後對比表。同時，也修正了部分員工薪資計算錯誤的問題，並將差額轉列其他津貼。</td>
+  <td class="rate-cell"><div class="rate-wrap"><div class="rate-bar" style="width:85%;background:#28a745"></div><input class="rate-input" type="number" min="0" max="100" value="85" oninput="updateRate(this)"></div></td>
+  <td class="deadline-cell">2026/06/30</td>
+  <td class="rag-cell"><span class="rag-badge" style="background:#28a745">🟢 正常推進</span></td>
+  <td class="blocker-cell"><span class="blocker-text">全興廠調薪對比表資料仍有錯誤，需修正計算邏輯</span></td>
+</tr>
+
+<tr class="row-green">
+  <td class="cat-cell" rowspan="1"><span class="cat-label">訓練系統</span></td>
+  <td>HR人力4->2名</td>
+  <td class="goal-cell">1.AI認證系統<br>2.活動報名系統<br>3.訓練證照履歷自動更新與通知</td>
+  <td class="owner-cell">Bella</td>
+  <td class="result-cell">本週完成人評會晉升報告範本改版，新增AI評核標準並套用公司公版，輸出規範草案。同時，企業內訓平台Replit遷移至本機的前置作業也已完成，包含環境變數清查與還原腳本產出。</td>
+  <td class="rate-cell"><div class="rate-wrap"><div class="rate-bar" style="width:85%;background:#28a745"></div><input class="rate-input" type="number" min="0" max="100" value="85" oninput="updateRate(this)"></div></td>
+  <td class="deadline-cell">2026/06/30</td>
+  <td class="rag-cell"><span class="rag-badge" style="background:#28a745">🟢 正常推進</span></td>
+  <td class="blocker-cell"><span class="blocker-text">IT DB匯出SQL檔尚未取得，人評會AI評核標準待委員確認</span></td>
+</tr>
+
+<tr class="row-red">
+  <td class="cat-cell" rowspan="1"><span class="cat-label">召募系統</span></td>
+  <td>HR召募作業流程可以無人工</td>
+  <td class="goal-cell">1.自動串連104人力銀行<br>2.面試人員資料自動轉為新人資料串連至鼎新HRM系統<br>3.Ai面試官建置</td>
+  <td class="owner-cell">詩紜</td>
+  <td class="result-cell">「下載已報到員工資料到KM」腳本已重構為zip模式，並成功進行單人測試。健檢報告整理已完成39位人員盤點，並規劃「每月5號前ATS抓上月報到員工體檢報告寄工安」腳本，但卡在ATS API Key scope不足。</td>
+  <td class="rate-cell"><div class="rate-wrap"><div class="rate-bar" style="width:85%;background:#28a745"></div><input class="rate-input" type="number" min="0" max="100" value="85" oninput="updateRate(this)"></div></td>
+  <td class="deadline-cell">2026/06/30</td>
+  <td class="rag-cell"><span class="rag-badge" style="background:#dc3545">🔴 卡關</span></td>
+  <td class="blocker-cell"><span class="blocker-text">ATS API Key scope不足</span></td>
+</tr>
+
+<tr class="row-yellow">
+  <td class="cat-cell" rowspan="1"><span class="cat-label">碳平台管理系統</span></td>
+  <td>係數庫EXCEL整理更新時間需1週以上--直接帶入數據</td>
+  <td class="goal-cell">1.完善與 Excel 完全對齊的「係數庫管理」與匯入功能<br>2.上線水電單據 OCR 辨識與鼎新報表一鍵拋轉<br>3.將碳盤查平台數據儀表版化</td>
+  <td class="owner-cell">婕誼</td>
+  <td class="result-cell">本週持續進行 AI 自動化腳本的連接 HTML 修正工作，並檢視了數據建模的進度，但仍有係數表設定與 Excel 對齊的問題待解決。</td>
+  <td class="rate-cell"><div class="rate-wrap"><div class="rate-bar" style="width:25%;background:#dc3545"></div><input class="rate-input" type="number" min="0" max="100" value="25" oninput="updateRate(this)"></div></td>
+  <td class="deadline-cell">2026/07/31</td>
+  <td class="rag-cell"><span class="rag-badge" style="background:#e6a800">🟡 待改善</span></td>
+  <td class="blocker-cell"><span class="blocker-text">HTML修正問題，係數表設定未與Excel對齊</span></td>
+</tr>
+
+<tr class="row-none">
+  <td class="cat-cell" rowspan="1"><span class="cat-label">合約審核系統</span></td>
+  <td>80H/月</td>
+  <td class="goal-cell">1.合約AI審核流程<br>2.合約追蹤進度<br>3.串連BPM簽核流程<br>4.串連CRM存檔</td>
+  <td class="owner-cell">柏羽</td>
+  <td class="result-cell">—</td>
+  <td class="rate-cell"><div class="rate-wrap"><div class="rate-bar" style="width:20%;background:#dc3545"></div><input class="rate-input" type="number" min="0" max="100" value="20" oninput="updateRate(this)"></div></td>
+  <td class="deadline-cell">2026/06/30</td>
+  <td class="rag-cell"><span class="rag-badge" style="background:#adb5bd">⚪ 本週無資料</span></td>
+  <td class="blocker-cell"><span class="no-blocker">—</span></td>
+</tr>
+
+<tr class="row-none">
+  <td class="cat-cell" rowspan="1"><span class="cat-label">許可系統</span></td>
+  <td>即使管理各項許可的到期性與追蹤</td>
+  <td class="goal-cell">1.各項許可到期日可追蹤<br>2.提供下載專區，減少專責人員作業時間</td>
+  <td class="owner-cell">信佳</td>
+  <td class="result-cell">—</td>
+  <td class="rate-cell"><div class="rate-wrap"><div class="rate-bar" style="width:20%;background:#dc3545"></div><input class="rate-input" type="number" min="0" max="100" value="20" oninput="updateRate(this)"></div></td>
+  <td class="deadline-cell">2026/06/30</td>
+  <td class="rag-cell"><span class="rag-badge" style="background:#adb5bd">⚪ 本週無資料</span></td>
+  <td class="blocker-cell"><span class="no-blocker">—</span></td>
+</tr>
+
+<tr class="row-none">
+  <td class="cat-cell" rowspan="1"><span class="cat-label">職安(OHS)系統</span></td>
+  <td>減少職安人員行政作業時間(80時/月)</td>
+  <td class="goal-cell">1.腳本自動鑑別並更新職安相關法規<br>2.AI問答機器人提供前端作業主管/人員隨時辨識及評估風險，並自動生成改善建議<br>3.每日自動抓取工安情報及新聞，供同仁瀏覽並留存作為訓練之教材<br>4.串連BPM分析公司工傷事故<br>5.職護臨場服務名單自動篩選並發送通知、並進行健康追蹤<br>6.承攬商管理線上化<br>7.現場6S點檢結合OCR自動評分，未來作為競賽或獎金基準</td>
+  <td class="owner-cell">佑毓</td>
+  <td class="result-cell">—</td>
+  <td class="rate-cell"><div class="rate-wrap"><div class="rate-bar" style="width:30%;background:#dc3545"></div><input class="rate-input" type="number" min="0" max="100" value="30" oninput="updateRate(this)"></div></td>
+  <td class="deadline-cell">2026/06/30</td>
+  <td class="rag-cell"><span class="rag-badge" style="background:#adb5bd">⚪ 本週無資料</span></td>
+  <td class="blocker-cell"><span class="no-blocker">—</span></td>
+</tr>
+
+          </tbody>
+        </table>
+      </div>
+
+    </div><!-- /tab-tracker -->
+
+    <p class="page-footer">大豐環保科技 · HR 數據分析平台 · 自動化週報系統</p>
+  </div>
+
+  <script>
+    function showTab(name, btn) {
+      // 切換面板
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      document.getElementById('tab-' + name).classList.add('active');
+      // 切換按鈕樣式
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    }
+    function updateRate(inp) {
+      var v = Math.min(Math.max(parseInt(inp.value) || 0, 0), 100);
+      var bar = inp.previousElementSibling;
+      var color = v >= 100 ? '#1a8c6e' : v >= 80 ? '#28a745' : v >= 60 ? '#e6a800' : '#dc3545';
+      bar.style.width = v + '%';
+      bar.style.background = color;
+    }
+    function downloadHTML() {
+      /* 下載當前頁面完整 HTML */
+      var html = document.documentElement.outerHTML;
+      var blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url;
+      var today = new Date();
+      var y = today.getFullYear();
+      var m = String(today.getMonth() + 1).padStart(2, '0');
+      var d = String(today.getDate()).padStart(2, '0');
+      a.download = '人資部週追蹤報告(0520~0526).html';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+  </script>
+
+</body>
+</html>

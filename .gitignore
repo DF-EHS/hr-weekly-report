@@ -1,0 +1,41 @@
+# ── 敏感設定檔（含 API 金鑰，絕對不能上傳）──
+config.json
+
+# ── 員工人事原始資料（含個資，嚴禁上傳）──
+資料/*.xlsx
+資料/*.xls
+*.xlsx
+*.xls
+
+# ── Claude AI Agent 本機設定（不屬於專案程式碼）──
+.claude/
+
+# 同上，config 範例（留一份不含金鑰的樣板供版本控制）
+# config.example.json  ← 這個可以上傳（見下方說明）
+
+# Python 快取
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+
+# 虛擬環境
+.venv/
+venv/
+env/
+ENV/
+
+# OS 產生的垃圾檔
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# 編輯器暫存
+*.swp
+*.swo
+.idea/
+.vscode/settings.json
+
+# 本機測試輸出
+*.log

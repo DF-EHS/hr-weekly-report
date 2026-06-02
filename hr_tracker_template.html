@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>人資部週追蹤報告</title>
+<style>
+  /* ── 全域 ───────────────────────────────── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Noto Sans TC', 'Microsoft JhengHei', sans-serif;
+    background: #f0f2f5;
+    color: #212529;
+    min-height: 100vh;
+  }
+
+  /* ── 頁首 ───────────────────────────────── */
+  .page-header {
+    background: linear-gradient(135deg, #1a2a4a 0%, #2d4270 60%, #1a5276 100%);
+    color: #fff;
+    padding: 28px 40px 22px;
+    box-shadow: 0 2px 12px rgba(0,0,0,.25);
+  }
+  .page-header h1 {
+    font-size: 1.65rem;
+    font-weight: 700;
+    letter-spacing: .06em;
+    margin-bottom: 6px;
+  }
+  .header-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    font-size: .85rem;
+    opacity: .85;
+    margin-top: 4px;
+  }
+  .header-meta span { display: flex; align-items: center; gap: 6px; }
+
+  /* ── 摘要統計列 ─────────────────────────── */
+  .stats-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 18px 40px;
+    background: #fff;
+    border-bottom: 1px solid #dee2e6;
+  }
+  .stat-chip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 18px;
+    border-radius: 50px;
+    font-size: .88rem;
+    font-weight: 600;
+    box-shadow: 0 1px 4px rgba(0,0,0,.1);
+  }
+  .chip-total  { background: #e9ecef; color: #495057; }
+  .chip-done   { background: #d4edda; color: #1a8c6e; border: 1.5px solid #1a8c6e; }
+  .chip-green  { background: #d4edda; color: #28a745; border: 1.5px solid #28a745; }
+  .chip-yellow { background: #fff3cd; color: #856404; border: 1.5px solid #e6a800; }
+  .chip-red    { background: #f8d7da; color: #842029; border: 1.5px solid #dc3545; }
+  .chip-none   { background: #f8f9fa; color: #6c757d; border: 1.5px dashed #adb5bd; }
+  .stat-num { font-size: 1.25rem; line-height: 1; }
+
+  /* ── 說明 ───────────────────────────────── */
+  .legend-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 10px 40px;
+    background: #fff;
+    border-bottom: 1px solid #dee2e6;
+    font-size: .8rem;
+    color: #6c757d;
+  }
+  .legend-item { display: flex; align-items: center; gap: 5px; }
+  .legend-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  /* ── 主要表格容器 ───────────────────────── */
+  .table-wrap {
+    padding: 24px 40px 48px;
+    overflow-x: auto;
+  }
+
+  /* ── 追蹤表格 ───────────────────────────── */
+  .tracker-table {
+    width: 100%;
+    min-width: 1100px;
+    border-collapse: collapse;
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 16px rgba(0,0,0,.08);
+  }
+
+  /* 表頭 */
+  .tracker-table thead tr {
+    background: #1a2a4a;
+    color: #fff;
+  }
+  .tracker-table th {
+    padding: 13px 14px;
+    font-size: .82rem;
+    font-weight: 600;
+    text-align: left;
+    letter-spacing: .04em;
+    white-space: nowrap;
+    border-right: 1px solid rgba(255,255,255,.1);
+  }
+  .tracker-table th:last-child { border-right: none; }
+
+  /* 欄位寬度 */
+  .col-category { width: 110px; }
+  .col-benefit  { width: 140px; }
+  .col-goal     { width: 200px; }
+  .col-owner    { width: 72px; }
+  .col-result   { width: 240px; }
+  .col-rate     { width: 110px; }
+  .col-deadline { width: 96px; }
+  .col-rag      { width: 108px; }
+  .col-blocker  { width: 160px; }
+
+  /* 表格資料列 */
+  .tracker-table td {
+    padding: 12px 14px;
+    font-size: .84rem;
+    line-height: 1.55;
+    border-bottom: 1px solid #e9ecef;
+    border-right: 1px solid #f0f2f5;
+    vertical-align: top;
+  }
+  .tracker-table td:last-child { border-right: none; }
+  .tracker-table tr:last-child td { border-bottom: none; }
+
+  /* 項目名稱儲存格（群組欄）*/
+  .cat-cell {
+    background: #f8f9fa !important;
+    border-right: 3px solid #dee2e6 !important;
+    vertical-align: middle !important;
+    text-align: center;
+  }
+  .cat-label {
+    display: inline-block;
+    writing-mode: horizontal-tb;
+    font-weight: 700;
+    font-size: .88rem;
+    color: #1a2a4a;
+    background: #e9ecef;
+    border-radius: 6px;
+    padding: 6px 10px;
+    line-height: 1.4;
+    word-break: keep-all;
+  }
+
+  /* 列顏色 */
+  .row-done   { background: #f0fff4; }
+  .row-green  { background: #f8fff9; }
+  .row-yellow { background: #fffdf0; }
+  .row-red    { background: #fff8f8; }
+  .row-none   { background: #fafafa; }
+
+  /* hover */
+  .tracker-table tbody tr:hover td { filter: brightness(.97); }
+
+  /* 各儲存格細節 */
+  .owner-cell { text-align: center; }
+  .owner-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 50px;
+    font-size: .78rem;
+    font-weight: 600;
+    color: #fff;
+    white-space: nowrap;
+  }
+
+  .rag-cell { text-align: center; }
+  .rag-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 50px;
+    font-size: .78rem;
+    font-weight: 600;
+    color: #fff;
+    white-space: nowrap;
+  }
+
+  .goal-cell { font-size: .82rem; color: #343a40; }
+  .result-cell { font-size: .82rem; }
+
+  .rate-wrap {
+    position: relative;
+    height: 22px;
+    background: #e9ecef;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-top: 2px;
+  }
+  .rate-bar {
+    height: 100%;
+    border-radius: 4px;
+    transition: width .3s ease;
+  }
+  .rate-label {
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: .78rem;
+    font-weight: 700;
+    color: #fff;
+    text-shadow: 0 1px 2px rgba(0,0,0,.4);
+    pointer-events: none;
+  }
+
+  .deadline-cell { font-size: .78rem; color: #6c757d; white-space: nowrap; }
+
+  .blocker-text {
+    color: #c0392b;
+    font-size: .8rem;
+    font-weight: 600;
+  }
+  .no-blocker { color: #adb5bd; font-size: .8rem; }
+
+  .no-data {
+    text-align: center;
+    padding: 40px;
+    color: #adb5bd;
+    font-style: italic;
+  }
+
+  /* ── 頁尾 ───────────────────────────────── */
+  .page-footer {
+    text-align: center;
+    padding: 20px;
+    font-size: .78rem;
+    color: #adb5bd;
+    background: #fff;
+    border-top: 1px solid #dee2e6;
+  }
+
+  @media (max-width: 768px) {
+    .page-header  { padding: 18px 16px; }
+    .stats-bar    { padding: 14px 16px; }
+    .legend-bar   { padding: 10px 16px; }
+    .table-wrap   { padding: 16px 8px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- 頁首 -->
+<header class="page-header">
+  <h1>📋 人資部週追蹤報告</h1>
+  <div class="header-meta">
+    <span>📅 週期：{{WEEK_LABEL}}</span>
+    <span>🕐 產生時間：{{GENERATED_AT}}</span>
+  </div>
+</header>
+
+<!-- 匯出列 -->
+<div class="export-bar">
+  <button class="html-btn" onclick="downloadHTML()">&#128190; 下載 HTML 報告</button>
+</div>
+
+<!-- 摘要統計列 -->
+<div class="stats-bar">
+  <div class="stat-chip chip-total">
+    <span class="stat-num">{{TOTAL_COUNT}}</span> 追蹤項目
+  </div>
+  <div class="stat-chip chip-done">
+    <span class="stat-num">{{DONE_COUNT}}</span> ✅ 已完成
+  </div>
+  <div class="stat-chip chip-green">
+    <span class="stat-num">{{GREEN_COUNT}}</span> 🟢 正常推進
+  </div>
+  <div class="stat-chip chip-yellow">
+    <span class="stat-num">{{YELLOW_COUNT}}</span> 🟡 待改善
+  </div>
+  <div class="stat-chip chip-red">
+    <span class="stat-num">{{RED_COUNT}}</span> 🔴 卡關
+  </div>
+  <div class="stat-chip chip-none">
+    <span class="stat-num">{{NONE_COUNT}}</span> ⚪ 本週無資料
+  </div>
+</div>
+
+<!-- 燈號說明 -->
+<div class="legend-bar">
+  <strong style="margin-right:6px">RAG 說明：</strong>
+  <span class="legend-item"><span class="legend-dot" style="background:#1a8c6e"></span>已完成（100%）</span>
+  <span class="legend-item"><span class="legend-dot" style="background:#28a745"></span>正常推進（有明確進展）</span>
+  <span class="legend-item"><span class="legend-dot" style="background:#e6a800"></span>待改善（進度偏慢或無明顯進展）</span>
+  <span class="legend-item"><span class="legend-dot" style="background:#dc3545"></span>卡關（有阻礙或需要協助）</span>
+  <span class="legend-item"><span class="legend-dot" style="background:#adb5bd"></span>本週無資料（未提交日誌）</span>
+</div>
+
+<!-- 主要表格 -->
+<div class="table-wrap">
+  <table class="tracker-table">
+    <colgroup>
+      <col class="col-category">
+      <col class="col-benefit">
+      <col class="col-goal">
+      <col class="col-owner">
+      <col class="col-result">
+      <col class="col-rate">
+      <col class="col-deadline">
+      <col class="col-rag">
+      <col class="col-blocker">
+    </colgroup>
+    <thead>
+      <tr>
+        <th>項目名稱</th>
+        <th>預期效益</th>
+        <th>目標</th>
+        <th>負責人</th>
+        <th>本週成果</th>
+        <th>達成率%</th>
+        <th>預計完成日</th>
+        <th>RAG</th>
+        <th>卡關／需求</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{TABLE_ROWS}}
+    </tbody>
+  </table>
+</div>
+
+<!-- 頁尾 -->
+<footer class="page-footer">
+  本報告由 Gemini 2.5 Flash 自動分析日誌產生，供主管參考使用 ｜ {{GENERATED_AT}}
+</footer>
+
+<script>
+  function downloadHTML() {
+    /* 下載當前頁面完整 HTML */
+    var html = document.documentElement.outerHTML;
+    var blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    var today = new Date();
+    var y = today.getFullYear();
+    var m = String(today.getMonth() + 1).padStart(2, '0');
+    var d = String(today.getDate()).padStart(2, '0');
+    a.download = '人資部週追蹤報告_' + y + m + d + '.html';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+</script>
+
+</body>
+</html>

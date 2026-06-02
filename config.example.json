@@ -1,0 +1,38 @@
+{
+  "gemini_api_key": "YOUR_GEMINI_API_KEY_HERE",
+  "email_subjects": [
+    "工作日誌",
+    "每日工作報告"
+  ],
+  "sender_mapping": {
+    "bella": "Bella",
+    "劉育杉": "Bella",
+    "HR-Bella": "Bella",
+    "an sun": "An",
+    "孫詩紜": "An",
+    "HR-An": "An",
+    "gloom": "Gloom",
+    "賴佑毓": "Gloom",
+    "HR-Gloom": "Gloom",
+    "HR-Andy Chen 陳信佳": "陳信佳",
+    "陳信佳": "陳信佳",
+    "HR-Legal-Eva Lai 賴柏羽": "賴柏羽",
+    "賴柏羽": "賴柏羽",
+    "HR-Chiehyi": "Chiehyi",
+    "王婕誼": "Chiehyi",
+    "chiehyi": "Chiehyi"
+  },
+  "members": [
+    "Bella",
+    "An",
+    "Gloom",
+    "陳信佳",
+    "賴柏羽",
+    "Chiehyi"
+  ],
+  "days_to_look_back": 30,
+  "outlook_folder_path": "人資部/每日工作報告",
+  "score_overrides": {
+    "Chiehyi": [69, 85]
+  }
+}

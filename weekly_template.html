@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>週工作彙整報告</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Segoe UI", "Microsoft JhengHei", Arial, sans-serif;
+      background: #f0f4f2;
+      color: #333;
+      min-height: 100vh;
+    }
+
+    /* ── 頂部 Header ── */
+    .page-header {
+      background: linear-gradient(135deg, #0d5c63 0%, #1a9aa5 60%, #2ab8c5 100%);
+      color: #fff;
+      padding: 30px 40px 26px;
+      box-shadow: 0 3px 16px rgba(0,0,0,.22);
+    }
+    .page-header h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      letter-spacing: .04em;
+    }
+    .page-header .week-range {
+      margin-top: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      background: rgba(255,255,255,.18);
+      display: inline-block;
+      padding: 4px 14px;
+      border-radius: 20px;
+      letter-spacing: .02em;
+    }
+    .page-header .subtitle {
+      margin-top: 8px;
+      font-size: .85rem;
+      opacity: .8;
+    }
+
+    /* ── 主容器 ── */
+    .container {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 36px 24px 64px;
+    }
+
+    /* ── 區塊標題 ── */
+    .section-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #0d5c63;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #c2dede;
+    }
+
+    /* ── 團隊概覽列 ── */
+    .overview-row {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 36px;
+      flex-wrap: wrap;
+    }
+    .overview-card {
+      flex: 1;
+      min-width: 130px;
+      background: #fff;
+      border-radius: 14px;
+      padding: 20px 22px;
+      text-align: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,.07);
+      border-top: 4px solid #c2dede;
+    }
+    .overview-card.big {
+      flex: 2;
+      border-top-color: #1a9aa5;
+    }
+    .overview-card.green  { border-top-color: #28a745; }
+    .overview-card.yellow { border-top-color: #e6a800; }
+    .overview-card.red    { border-top-color: #dc3545; }
+    .overview-card.none-card  { border-top-color: #adb5bd; }
+    .overview-card .num {
+      font-size: 2.4rem;
+      font-weight: 800;
+      line-height: 1;
+      color: #0d5c63;
+    }
+    .overview-card.big .num {
+      font-size: 3rem;
+    }
+    .overview-card.green  .num { color: #28a745; }
+    .overview-card.yellow .num { color: #c99000; }
+    .overview-card.red    .num { color: #dc3545; }
+    .overview-card.none-card  .num { color: #adb5bd; }
+    .overview-card .lbl {
+      margin-top: 8px;
+      font-size: .83rem;
+      color: #666;
+      font-weight: 600;
+    }
+
+    /* ── 成員卡片格線 ── */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 22px;
+      margin-bottom: 44px;
+    }
+
+    /* ── 成員卡片 ── */
+    .member-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 26px 26px 22px;
+      box-shadow: 0 3px 14px rgba(0,0,0,.08);
+      border-top: 5px solid #c2dede;
+      transition: transform .15s, box-shadow .15s;
+    }
+    .member-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(0,0,0,.12);
+    }
+    .member-card.rag-green  { border-top-color: #28a745; }
+    .member-card.rag-yellow { border-top-color: #e6a800; }
+    .member-card.rag-red    { border-top-color: #dc3545; }
+    .member-card.rag-none   { border-top-color: #adb5bd; opacity: .72; }
+
+    /* 卡片頂部（成員名 + RAG 燈號） */
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .member-tag {
+      display: inline-block;
+      padding: 5px 16px;
+      border-radius: 20px;
+      font-size: .92rem;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: .02em;
+    }
+    .rag-pill {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: .78rem;
+      font-weight: 700;
+      color: #fff;
+      white-space: nowrap;
+    }
+
+    /* 達成率大數字列 */
+    .rate-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 10px;
+    }
+    .rate-num {
+      font-size: 3rem;
+      font-weight: 800;
+      line-height: 1;
+    }
+    .rate-meta { display: flex; flex-direction: column; gap: 3px; }
+    .rate-label {
+      font-size: .78rem;
+      color: #555;
+      font-weight: 600;
+    }
+    .rate-days {
+      font-size: .76rem;
+      color: #999;
+    }
+
+    /* 達成率進度條 */
+    .progress-track {
+      background: #e9ecef;
+      border-radius: 6px;
+      height: 8px;
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      border-radius: 6px;
+      transition: width .5s ease;
+    }
+
+    /* 分隔線 */
+    .divider {
+      border: none;
+      border-top: 1px solid #edf2f0;
+      margin-bottom: 14px;
+    }
+
+    /* 核心工作標題 */
+    .bullets-label {
+      font-size: .78rem;
+      font-weight: 700;
+      color: #0d5c63;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+
+    /* 條列要點 */
+    .bullet-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .bullet-list li {
+      position: relative;
+      padding: 5px 0 5px 20px;
+      font-size: .88rem;
+      line-height: 1.55;
+      color: #444;
+      border-bottom: 1px dashed #edf2f0;
+    }
+    .bullet-list li:last-child { border-bottom: none; }
+    .bullet-list li::before {
+      content: '▸';
+      position: absolute;
+      left: 0;
+      top: 5px;
+      color: #1a9aa5;
+      font-size: .82rem;
+    }
+
+    /* 無資料佔位 */
+    .no-data-msg {
+      text-align: center;
+      padding: 44px 0 28px;
+      color: #bbb;
+      font-size: .95rem;
+      letter-spacing: .02em;
+    }
+
+    /* ── 頁尾 ── */
+    .page-footer {
+      text-align: center;
+      margin-top: 44px;
+      font-size: .8rem;
+      color: #aaa;
+    }
+
+    /* ── 評分說明備註 ── */
+    .score-note {
+      background: #f4fafa;
+      border: 1px solid #c2dede;
+      border-left: 4px solid #1a9aa5;
+      border-radius: 8px;
+      padding: 12px 18px;
+      margin-bottom: 28px;
+      font-size: .83rem;
+      color: #555;
+      line-height: 1.7;
+    }
+    .score-note strong { color: #0d5c63; }
+
+    /* ── 響應式 ── */
+    @media (max-width: 768px) {
+      .page-header { padding: 22px 20px 18px; }
+      .container   { padding: 24px 14px 48px; }
+      .overview-card.big { flex: 100%; }
+      .cards-grid  { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <div class="page-header">
+    <h1>📊 週工作彙整報告</h1>
+    <div class="week-range">📅 {{WEEK_LABEL}}</div>
+    <p class="subtitle">產生時間：{{GENERATED_AT}}</p>
+  </div>
+
+  <div class="container">
+
+    <!-- 團隊本週概覽 -->
+    <p class="section-title">團隊本週概覽</p>
+    <div class="overview-row">
+      <div class="overview-card big">
+        <div class="num" style="color:{{TEAM_AVG_COLOR}}">{{TEAM_AVG}}%</div>
+        <div class="lbl">團隊週平均達成率</div>
+      </div>
+      <div class="overview-card green">
+        <div class="num">{{GREEN_COUNT}}</div>
+        <div class="lbl">🟢 達成</div>
+      </div>
+      <div class="overview-card yellow">
+        <div class="num">{{YELLOW_COUNT}}</div>
+        <div class="lbl">🟡 部分達成</div>
+      </div>
+      <div class="overview-card red">
+        <div class="num">{{RED_COUNT}}</div>
+        <div class="lbl">🔴 待改善</div>
+      </div>
+      <div class="overview-card none-card">
+        <div class="num">{{NONE_COUNT}}</div>
+        <div class="lbl">⚪ 無資料</div>
+      </div>
+    </div>
+
+    <!-- 評分說明備註 -->
+    <div class="score-note">
+      💡 <strong>達成率評分說明：</strong>以上百分比由 Gemini AI 依據週內所有日誌內容綜合評估，評分維度包含：<strong>AI 工具實際使用情況</strong>、工作任務完成度、產出具體程度。若日誌中記錄 AI 使用場景較少或以「觀望期」描述，評分會相對偏低。
+    </div>
+
+    <!-- 成員週報摘要 -->
+    <p class="section-title">成員週報摘要（共 {{MEMBER_COUNT}} 人）</p>
+    <div class="cards-grid">
+      {{MEMBER_CARDS}}
+    </div>
+
+    <p class="page-footer">大豐環保科技 · HR 數據分析平台 · 週彙整報告系統</p>
+  </div>
+
+</body>
+</html>

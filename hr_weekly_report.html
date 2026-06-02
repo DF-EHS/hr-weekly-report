@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>人資部週追蹤報告</title>
+<style>
+  /* ── 全域 ───────────────────────────────── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Noto Sans TC', 'Microsoft JhengHei', sans-serif;
+    background: #f0f2f5;
+    color: #212529;
+    min-height: 100vh;
+  }
+
+  /* ── 頁首 ───────────────────────────────── */
+  .page-header {
+    background: linear-gradient(135deg, #1a2a4a 0%, #2d4270 60%, #1a5276 100%);
+    color: #fff;
+    padding: 28px 40px 22px;
+    box-shadow: 0 2px 12px rgba(0,0,0,.25);
+  }
+  .page-header h1 {
+    font-size: 1.65rem;
+    font-weight: 700;
+    letter-spacing: .06em;
+    margin-bottom: 6px;
+  }
+  .header-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    font-size: .85rem;
+    opacity: .85;
+    margin-top: 4px;
+  }
+  .header-meta span { display: flex; align-items: center; gap: 6px; }
+
+  /* ── 摘要統計列 ─────────────────────────── */
+  .stats-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 18px 40px;
+    background: #fff;
+    border-bottom: 1px solid #dee2e6;
+  }
+  .stat-chip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 18px;
+    border-radius: 50px;
+    font-size: .88rem;
+    font-weight: 600;
+    box-shadow: 0 1px 4px rgba(0,0,0,.1);
+  }
+  .chip-total  { background: #e9ecef; color: #495057; }
+  .chip-done   { background: #d4edda; color: #1a8c6e; border: 1.5px solid #1a8c6e; }
+  .chip-green  { background: #d4edda; color: #28a745; border: 1.5px solid #28a745; }
+  .chip-yellow { background: #fff3cd; color: #856404; border: 1.5px solid #e6a800; }
+  .chip-red    { background: #f8d7da; color: #842029; border: 1.5px solid #dc3545; }
+  .chip-none   { background: #f8f9fa; color: #6c757d; border: 1.5px dashed #adb5bd; }
+  .stat-num { font-size: 1.25rem; line-height: 1; }
+
+  /* ── 說明 ───────────────────────────────── */
+  .legend-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 10px 40px;
+    background: #fff;
+    border-bottom: 1px solid #dee2e6;
+    font-size: .8rem;
+    color: #6c757d;
+  }
+  .legend-item { display: flex; align-items: center; gap: 5px; }
+  .legend-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  /* ── 主要表格容器 ───────────────────────── */
+  .table-wrap {
+    padding: 24px 40px 48px;
+    overflow-x: auto;
+  }
+
+  /* ── 追蹤表格 ───────────────────────────── */
+  .tracker-table {
+    width: 100%;
+    min-width: 1100px;
+    border-collapse: collapse;
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 16px rgba(0,0,0,.08);
+  }
+
+  /* 表頭 */
+  .tracker-table thead tr {
+    background: #1a2a4a;
+    color: #fff;
+  }
+  .tracker-table th {
+    padding: 13px 14px;
+    font-size: .82rem;
+    font-weight: 600;
+    text-align: left;
+    letter-spacing: .04em;
+    white-space: nowrap;
+    border-right: 1px solid rgba(255,255,255,.1);
+  }
+  .tracker-table th:last-child { border-right: none; }
+
+  /* 欄位寬度 */
+  .col-category { width: 110px; }
+  .col-benefit  { width: 140px; }
+  .col-goal     { width: 200px; }
+  .col-owner    { width: 72px; }
+  .col-result   { width: 240px; }
+  .col-rate     { width: 110px; }
+  .col-deadline { width: 96px; }
+  .col-rag      { width: 108px; }
+  .col-blocker  { width: 160px; }
+
+  /* 表格資料列 */
+  .tracker-table td {
+    padding: 12px 14px;
+    font-size: .84rem;
+    line-height: 1.55;
+    border-bottom: 1px solid #e9ecef;
+    border-right: 1px solid #f0f2f5;
+    vertical-align: top;
+  }
+  .tracker-table td:last-child { border-right: none; }
+  .tracker-table tr:last-child td { border-bottom: none; }
+
+  /* 項目名稱儲存格（群組欄）*/
+  .cat-cell {
+    background: #f8f9fa !important;
+    border-right: 3px solid #dee2e6 !important;
+    vertical-align: middle !important;
+    text-align: center;
+  }
+  .cat-label {
+    display: inline-block;
+    writing-mode: horizontal-tb;
+    font-weight: 700;
+    font-size: .88rem;
+    color: #1a2a4a;
+    background: #e9ecef;
+    border-radius: 6px;
+    padding: 6px 10px;
+    line-height: 1.4;
+    word-break: keep-all;
+  }
+
+  /* 列顏色 */
+  .row-done   { background: #f0fff4; }
+  .row-green  { background: #f8fff9; }
+  .row-yellow { background: #fffdf0; }
+  .row-red    { background: #fff8f8; }
+  .row-none   { background: #fafafa; }
+
+  /* hover */
+  .tracker-table tbody tr:hover td { filter: brightness(.97); }
+
+  /* 各儲存格細節 */
+  .owner-cell { text-align: center; }
+  .owner-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 50px;
+    font-size: .78rem;
+    font-weight: 600;
+    color: #fff;
+    white-space: nowrap;
+  }
+
+  .rag-cell { text-align: center; }
+  .rag-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 50px;
+    font-size: .78rem;
+    font-weight: 600;
+    color: #fff;
+    white-space: nowrap;
+  }
+
+  .goal-cell { font-size: .82rem; color: #343a40; }
+  .result-cell { font-size: .82rem; }
+
+  .rate-wrap {
+    position: relative;
+    height: 22px;
+    background: #e9ecef;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-top: 2px;
+  }
+  .rate-bar {
+    height: 100%;
+    border-radius: 4px;
+    transition: width .3s ease;
+  }
+  .rate-label {
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: .78rem;
+    font-weight: 700;
+    color: #fff;
+    text-shadow: 0 1px 2px rgba(0,0,0,.4);
+    pointer-events: none;
+  }
+
+  .deadline-cell { font-size: .78rem; color: #6c757d; white-space: nowrap; }
+
+  .blocker-text {
+    color: #c0392b;
+    font-size: .8rem;
+    font-weight: 600;
+  }
+  .no-blocker { color: #adb5bd; font-size: .8rem; }
+
+  .no-data {
+    text-align: center;
+    padding: 40px;
+    color: #adb5bd;
+    font-style: italic;
+  }
+
+  /* ── 頁尾 ───────────────────────────────── */
+  .page-footer {
+    text-align: center;
+    padding: 20px;
+    font-size: .78rem;
+    color: #adb5bd;
+    background: #fff;
+    border-top: 1px solid #dee2e6;
+  }
+
+  @media (max-width: 768px) {
+    .page-header  { padding: 18px 16px; }
+    .stats-bar    { padding: 14px 16px; }
+    .legend-bar   { padding: 10px 16px; }
+    .table-wrap   { padding: 16px 8px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- 頁首 -->
+<header class="page-header">
+  <h1>📋 人資部週追蹤報告</h1>
+  <div class="header-meta">
+    <span>📅 週期：2026/05/27（三） ~ 2026/06/02（二）</span>
+    <span>🕐 產生時間：2026-05-28 14:47</span>
+  </div>
+</header>
+
+<!-- 摘要統計列 -->
+<div class="stats-bar">
+  <div class="stat-chip chip-total">
+    <span class="stat-num">11</span> 追蹤項目
+  </div>
+  <div class="stat-chip chip-done">
+    <span class="stat-num">2</span> ✅ 已完成
+  </div>
+  <div class="stat-chip chip-green">
+    <span class="stat-num">7</span> 🟢 正常推進
+  </div>
+  <div class="stat-chip chip-yellow">
+    <span class="stat-num">1</span> 🟡 待改善
+  </div>
+  <div class="stat-chip chip-red">
+    <span class="stat-num">0</span> 🔴 卡關
+  </div>
+  <div class="stat-chip chip-none">
+    <span class="stat-num">1</span> ⚪ 本週無資料
+  </div>
+</div>
+
+<!-- 燈號說明 -->
+<div class="legend-bar">
+  <strong style="margin-right:6px">RAG 說明：</strong>
+  <span class="legend-item"><span class="legend-dot" style="background:#1a8c6e"></span>已完成（100%）</span>
+  <span class="legend-item"><span class="legend-dot" style="background:#28a745"></span>正常推進（有明確進展）</span>
+  <span class="legend-item"><span class="legend-dot" style="background:#e6a800"></span>待改善（進度偏慢或無明顯進展）</span>
+  <span class="legend-item"><span class="legend-dot" style="background:#dc3545"></span>卡關（有阻礙或需要協助）</span>
+  <span class="legend-item"><span class="legend-dot" style="background:#adb5bd"></span>本週無資料（未提交日誌）</span>
+</div>
+
+<!-- 主要表格 -->
+<div class="table-wrap">
+  <table class="tracker-table">
+    <colgroup>
+      <col class="col-category">
+      <col class="col-benefit">
+      <col class="col-goal">
+      <col class="col-owner">
+      <col class="col-result">
+      <col class="col-rate">
+      <col class="col-deadline">
+      <col class="col-rag">
+      <col class="col-blocker">
+    </colgroup>
+    <thead>
+      <tr>
+        <th>項目名稱</th>
+        <th>預期效益</th>
+        <th>目標</th>
+        <th>負責人</th>
+        <th>本週成果</th>
+        <th>達成率%</th>
+        <th>預計完成日</th>
+        <th>RAG</th>
+        <th>卡關／需求</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="row-done">
+  <td class="cat-cell" rowspan="4"><span class="cat-label">報表自動化</span></td>
+  <td>HR人力4->2名</td>
+  <td class="goal-cell">每月人力效益報表(已完成，持續優化)</td>
+  <td class="owner-cell"><span class="owner-badge" style="background:#6c757d">婕誼</span></td>
+  <td class="result-cell">本週日誌中未明確提及「每月人力效益報表」的直接進度。然而，婕誼持續進行獎金分析相關工作，這可能與人力效益的評估間接相關，但無直接證據顯示有優化進度。</td>
+  <td class="rate-cell"><div class="rate-wrap"><div class="rate-bar" style="width:100%;background:#1a8c6e"></div><span class="rate-label">100%</span></div></td>
+  <td class="deadline-cell">2026/03/31</td>
+  <td class="rag-cell"><span class="rag-badge" style="background:#1a8c6e">✅ 已完成</span></td>
+  <td class="blocker-cell"><span class="no-blocker">—</span></td>
+</tr>
+
+<tr class="row-done">
+  <td>HR人力4->2名</td>
+  <td class="goal-cell">人力變化報表(已完成，持續優化)</td>
+  <td class="owner-cell"><span class="owner-badge" style="background:#6c757d">婕誼</span></td>
+  <td class="result-cell">本週婕誼在5月27日的工作日誌中提及「Agents-人力變化」相關工作，顯示此項目仍在持續進行中。雖然未有具體優化細節，但有持續關注與處理。</td>
+  <td class="rate-cell"><div class="rate-wrap"><div class="rate-bar" style="width:100%;background:#1a8c6e"></div><span class="rate-label">100%</span></div></td>
+  <td class="deadline-cell">2026/03/31</td>
+  <td class="rag-cell"><span class="rag-badge" style="background:#1a8c6e">✅ 已完成</span></td>
+  <td class="blocker-cell"><span class="no-blocker">—</span></td>
+</tr>
+
+<tr class="row-green">
+  <td>HR人力4->2名</td>
+  <td class="goal-cell">薪資調整變化</td>
+  <td class="owner-cell"><span class="owner-badge" style="background:#6c757d">婕誼</span></td>
+  <td class="result-cell">本週日誌中，婕誼修改了多份與獎金和佣金制度相關的文件，例如《D3-SD-062專案拓展部獎金管理準則.docx》和《2026_PCR_季度業績佣金制度_正式版.docx》，這些工作與薪資調整變化有高度關聯性。</td>
+  <td class="rate-cell"><div class="rate-wrap"><div class="rate-bar" style="width:20%;background:#dc3545"></div><span class="rate-label">20%</span></div></td>
+  <td class="deadline-cell">2026/06/30</td>
+  <td class="rag-cell"><span class="rag-badge" style="background:#28a745">🟢 正常推進</span></td>
+  <td class="blocker-cell"><span class="no-blocker">—</span></td>
+</tr>
+
+<tr class="row-green">
+  <td>HR人力4->2名</td>
+  <td class="goal-cell">招募效益相關分析</td>
+  <td class="owner-cell"><span class="owner-badge" style="background:#2a7dd9">詩紜</span></td>
+  <td class="result-cell">本週詩紜彙整了五股FB刊登職缺的最新狀況與問卷聯繫名單草稿，並規劃在完整投遞後產出最終版寄送用人單位主管。同時，她也更新了2026年召募達成率報表的5月待報到清單與缺額統計。</td>
+  <td class="rate-cell"><div class="rate-wrap"><div class="rate-bar" style="width:20%;background:#dc3545"></div><span class="rate-label">20%</span></div></td>
+  <td class="deadline-cell">2026/06/30</td>
+  <td class="rag-cell"><span class="rag-badge" style="background:#28a745">🟢 正常推進</span></td>
+  <td class="blocker-cell"><span class="no-blocker">—</span></td>
+</tr>
+
+<tr class="row-green">
+  <td class="cat-cell" rowspan="2"><span class="cat-label">人資作業自動化</span></td>
+  <td>HR人力4->2名</td>
+  <td class="goal-cell">新進人員加保、退保自動化</td>
+  <td class="owner-cell"><span class="owner-badge" style="background:#2a7dd9">詩紜</span></td>
+  <td class="result-cell">本週詩紜完成了新進人員體檢報告自動寄送工安專案的最終定版，修正了外場人員規則、整合上月離職清單並特別標註留停類別，同時擴充了CC收件人。此腳本已納入Windows排程，預計6/5首次執行。</td>
+  <td class="rate-cell"><div class="rate-wrap"><div class="rate-bar" style="width:60%;background:#e6a800"></div><span class="rate-label">60%</span></div></td>
+  <td class="deadline-cell">2026/07/31</td>
+  <td class="rag-cell"><span class="rag-badge" style="background:#28a745">🟢 正常推進</span></td>
+  <td class="blocker-cell"><span class="no-blocker">—</span></td>
+</tr>
+
+<tr class="row-yellow">
+  <td>HR人力4->2名</td>
+  <td class="goal-cell">投保證明下載自動化</td>
+  <td class="owner-cell"><span class="owner-badge" style="background:#2a7dd9">詩紜</span></td>
+  <td class="result-cell">本週無實質進度。</td>
+  <td class="rate-cell"><div class="rate-wrap"><div class="rate-bar" style="width:0%;background:#dc3545"></div><span class="rate-label">0%</span></div></td>
+  <td class="deadline-cell">2026/07/31</td>
+  <td class="rag-cell"><span class="rag-badge" style="background:#e6a800">🟡 待改善</span></td>
+  <td class="blocker-cell"><span class="no-blocker">—</span></td>
+</tr>
+
+<tr class="row-green">
+  <td class="cat-cell" rowspan="1"><span class="cat-label">加班與作業獎金系統</span></td>
+  <td>外部：每天減少加班單約200-300張(400分-600分)</td>
+  <td class="goal-cell">1.加班作業自動化<br>2.作業獎金評核自動化</td>
+  <td class="owner-cell"><span class="owner-badge" style="background:#7b5ea7">Bella</span></td>
+  <td class="result-cell">本週完成全興廠115年5月例假日加班申請模板自動產出。薪資結構調整計畫已完成11位全興廠員工薪資結構調整試算表，包含前後對比及差額說明，並修正薪資加總錯誤。每月薪資結算前影響名單比對腳本已完成架構設計，規劃7大薪資影響項目比對範圍。</td>
+  <td class="rate-cell"><div class="rate-wrap"><div class="rate-bar" style="width:85%;background:#28a745"></div><span class="rate-label">85%</span></div></td>
+  <td class="deadline-cell">2026/06/30</td>
+  <td class="rag-cell"><span class="rag-badge" style="background:#28a745">🟢 正常推進</span></td>
+  <td class="blocker-cell"><span class="no-blocker">—</span></td>
+</tr>
+
+<tr class="row-green">
+  <td class="cat-cell" rowspan="1"><span class="cat-label">訓練系統</span></td>
+  <td>HR人力4->2名</td>
+  <td class="goal-cell">1.AI認證系統<br>2.活動報名系統<br>3.訓練證照履歷自動更新與通知</td>
+  <td class="owner-cell"><span class="owner-badge" style="background:#7b5ea7">Bella</span></td>
+  <td class="result-cell">本週企業內訓平台專案已成功進行Git版控初始化，並建立dev-v1.0分支。證照手動通知紀錄功能已完成開發，包含前端UI、後端API與資料庫設計，並提交設計文件。</td>
+  <td class="rate-cell"><div class="rate-wrap"><div class="rate-bar" style="width:85%;background:#28a745"></div><span class="rate-label">85%</span></div></td>
+  <td class="deadline-cell">2026/06/30</td>
+  <td class="rag-cell"><span class="rag-badge" style="background:#28a745">🟢 正常推進</span></td>
+  <td class="blocker-cell"><span class="no-blocker">—</span></td>
+</tr>
+
+<tr class="row-green">
+  <td class="cat-cell" rowspan="1"><span class="cat-label">召募系統</span></td>
+  <td>HR召募作業流程可以無人工</td>
+  <td class="goal-cell">1.自動串連104人力銀行<br>2.面試人員資料自動轉為新人資料串連至鼎新HRM系統<br>3.Ai面試官建置</td>
+  <td class="owner-cell"><span class="owner-badge" style="background:#2a7dd9">詩紜</span></td>
+  <td class="result-cell">本週詩紜完成了ATS API權限整合，將所有腳本統一替換為最大權限token，解決了資料抓取限制。她也確認了ATS體檢報告可對應到員工姓名，作為新進報到串聯的前置作業。此外，招募管理系統的VScode本地開發環境已建置，並匯入Replit資料。</td>
+  <td class="rate-cell"><div class="rate-wrap"><div class="rate-bar" style="width:85%;background:#28a745"></div><span class="rate-label">85%</span></div></td>
+  <td class="deadline-cell">2026/06/30</td>
+  <td class="rag-cell"><span class="rag-badge" style="background:#28a745">🟢 正常推進</span></td>
+  <td class="blocker-cell"><span class="blocker-text">招募管理系統VScode開發伺服器重啟失敗</span></td>
+</tr>
+
+<tr class="row-green">
+  <td class="cat-cell" rowspan="1"><span class="cat-label">碳平台管理系統</span></td>
+  <td>係數庫EXCEL整理更新時間需1週以上--直接帶入數據</td>
+  <td class="goal-cell">1.完善與 Excel 完全對齊的「係數庫管理」與匯入功能<br>2.上線水電單據 OCR 辨識與鼎新報表一鍵拋轉<br>3.將碳盤查平台數據儀表版化</td>
+  <td class="owner-cell"><span class="owner-badge" style="background:#6c757d">婕誼</span></td>
+  <td class="result-cell">本週婕誼在5月28日的工作日誌中提及「週追蹤報告：目前同仁每日會寄工作報告到我的信箱。我想要把這些工作報告轉成週追蹤的html」，這顯示她正在嘗試將重複性工作自動化，並將報告數位化，與數位轉型目標相關。此外，她也進行了「update_logs.py」的相關工作，可能與數據處理或自動化腳本有關。</td>
+  <td class="rate-cell"><div class="rate-wrap"><div class="rate-bar" style="width:25%;background:#dc3545"></div><span class="rate-label">25%</span></div></td>
+  <td class="deadline-cell">2026/07/31</td>
+  <td class="rag-cell"><span class="rag-badge" style="background:#28a745">🟢 正常推進</span></td>
+  <td class="blocker-cell"><span class="no-blocker">—</span></td>
+</tr>
+
+<tr class="row-none">
+  <td class="cat-cell" rowspan="1"><span class="cat-label">合約審核系統</span></td>
+  <td>80H/月</td>
+  <td class="goal-cell">1.合約AI審核流程<br>2.合約追蹤進度<br>3.串連BPM簽核流程<br>4.串連CRM存檔</td>
+  <td class="owner-cell"><span class="owner-badge" style="background:#c0392b">柏羽</span></td>
+  <td class="result-cell">—</td>
+  <td class="rate-cell"><div class="rate-wrap"><div class="rate-bar" style="width:20%;background:#dc3545"></div><span class="rate-label">20%</span></div></td>
+  <td class="deadline-cell">2026/06/30</td>
+  <td class="rag-cell"><span class="rag-badge" style="background:#adb5bd">⚪ 本週無資料</span></td>
+  <td class="blocker-cell"><span class="no-blocker">—</span></td>
+</tr>
+
+    </tbody>
+  </table>
+</div>
+
+<!-- 頁尾 -->
+<footer class="page-footer">
+  本報告由 Gemini 2.5 Flash 自動分析日誌產生，供主管參考使用 ｜ 2026-05-28 14:47
+</footer>
+
+</body>
+</html>

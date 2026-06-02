@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>週工作日誌追蹤報告</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Segoe UI", "Microsoft JhengHei", Arial, sans-serif;
+      background: #f0f2f5;
+      color: #333;
+      min-height: 100vh;
+    }
+
+    /* ── 頂部 Header ── */
+    .page-header {
+      background: linear-gradient(135deg, #1a3c6e 0%, #2a6dd9 100%);
+      color: #fff;
+      padding: 28px 40px 24px;
+      box-shadow: 0 2px 12px rgba(0,0,0,.2);
+    }
+    .page-header h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      letter-spacing: .04em;
+    }
+    .page-header .subtitle {
+      margin-top: 6px;
+      font-size: .9rem;
+      opacity: .85;
+    }
+
+    /* ── 主容器 ── */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 32px 24px 60px;
+    }
+
+    /* ── 區塊標題 ── */
+    .section-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #1a3c6e;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #dbe4f0;
+    }
+
+    /* ── 摘要數字列 ── */
+    .summary-row {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+    }
+    .summary-card {
+      flex: 1;
+      min-width: 140px;
+      background: #fff;
+      border-radius: 12px;
+      padding: 20px 24px;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,.07);
+      border-top: 4px solid #c8d6ea;
+    }
+    .summary-card.green  { border-top-color: #28a745; }
+    .summary-card.yellow { border-top-color: #ffc107; }
+    .summary-card.red    { border-top-color: #dc3545; }
+    .summary-card .num {
+      font-size: 2.4rem;
+      font-weight: 800;
+      line-height: 1;
+      color: #1a3c6e;
+    }
+    .summary-card.green  .num { color: #28a745; }
+    .summary-card.yellow .num { color: #c99000; }
+    .summary-card.red    .num { color: #dc3545; }
+    .summary-card .lbl {
+      margin-top: 8px;
+      font-size: .85rem;
+      color: #666;
+      font-weight: 600;
+    }
+
+    /* ── 成員統計卡片 ── */
+    .stats-row {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+    }
+    .stat-card {
+      flex: 1;
+      min-width: 160px;
+      background: #fff;
+      border-radius: 12px;
+      padding: 22px 24px;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,.07);
+      border-left: 5px solid #c8d6ea;
+      transition: transform .15s;
+    }
+    .stat-card:hover { transform: translateY(-2px); }
+    .stat-card.card-green  { border-left-color: #28a745; }
+    .stat-card.card-yellow { border-left-color: #ffc107; }
+    .stat-card.card-red    { border-left-color: #dc3545; }
+    .stat-card.card-empty  { border-left-color: #adb5bd; opacity: .65; }
+    .stat-card .stat-name  { font-size: 1rem; font-weight: 700; color: #1a3c6e; }
+    .stat-card .stat-rate  { font-size: 2rem; font-weight: 800; margin: 8px 0 4px; color: #333; }
+    .stat-card .stat-desc  { font-size: .8rem; color: #888; }
+
+    /* ── 表格 ── */
+    .table-wrap {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.07);
+      overflow: hidden;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    thead tr {
+      background: #1a3c6e;
+      color: #fff;
+    }
+    thead th {
+      padding: 13px 14px;
+      text-align: left;
+      font-size: .85rem;
+      font-weight: 600;
+      letter-spacing: .03em;
+      white-space: nowrap;
+    }
+    tbody tr {
+      border-bottom: 1px solid #eef1f6;
+      transition: background .12s;
+    }
+    tbody tr:hover { background: #f5f8ff; }
+    tbody tr:last-child { border-bottom: none; }
+    tbody td {
+      padding: 12px 14px;
+      font-size: .88rem;
+      vertical-align: middle;
+    }
+
+    /* 成員標籤 */
+    .member-tag {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: .8rem;
+      font-weight: 700;
+      color: #fff;
+    }
+    .member-bella  { background: #7b5ea7; }
+    .member-an     { background: #2a7dd9; }
+    .member-gloom  { background: #e07b39; }
+    .member-陳信佳  { background: #1a8c6e; }
+    .member-賴柏羽  { background: #c0392b; }
+    .member-chiehyi { background: #6c757d; }
+
+    /* 摘要文字 */
+    .summary-cell { max-width: 320px; line-height: 1.5; color: #444; }
+
+    /* 進度條 */
+    .progress-bar-wrap {
+      position: relative;
+      background: #e9ecef;
+      border-radius: 6px;
+      height: 18px;
+      width: 120px;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      border-radius: 6px;
+      transition: width .4s ease;
+    }
+    .progress-label {
+      position: absolute;
+      right: 6px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: .72rem;
+      font-weight: 700;
+      color: #fff;
+      text-shadow: 0 1px 2px rgba(0,0,0,.4);
+    }
+
+    /* RAG 燈號 badge */
+    .rag-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: .78rem;
+      font-weight: 700;
+      color: #fff;
+      white-space: nowrap;
+    }
+
+    /* 空資料列 */
+    .no-data {
+      text-align: center;
+      padding: 40px !important;
+      color: #999;
+      font-size: .95rem;
+    }
+
+    /* ── 頁尾 ── */
+    .page-footer {
+      text-align: center;
+      margin-top: 40px;
+      font-size: .8rem;
+      color: #aaa;
+    }
+
+    /* ── 評分說明備註 ── */
+    .score-note {
+      background: #f8f9ff;
+      border: 1px solid #dbe4f0;
+      border-left: 4px solid #2a6dd9;
+      border-radius: 8px;
+      padding: 12px 18px;
+      margin-bottom: 28px;
+      font-size: .83rem;
+      color: #555;
+      line-height: 1.7;
+    }
+    .score-note strong { color: #1a3c6e; }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <div class="page-header">
+    <h1>📋 週工作日誌追蹤報告</h1>
+    <p class="subtitle">近 30 天資料 &nbsp;·&nbsp; 產生時間：2026年05月28日 12:08</p>
+  </div>
+
+  <div class="container">
+
+    <!-- 摘要數字 -->
+    <p class="section-title">整體摘要</p>
+    <div class="summary-row">
+      <div class="summary-card">
+        <div class="num">34</div>
+        <div class="lbl">總日誌數</div>
+      </div>
+      <div class="summary-card green">
+        <div class="num">9</div>
+        <div class="lbl">🟢 已達成</div>
+      </div>
+      <div class="summary-card yellow">
+        <div class="num">9</div>
+        <div class="lbl">🟡 部分達成</div>
+      </div>
+      <div class="summary-card red">
+        <div class="num">16</div>
+        <div class="lbl">🔴 待改善</div>
+      </div>
+    </div>
+
+    <!-- 成員達成概況 -->
+    <p class="section-title">成員達成概況</p>
+    <div class="stats-row">
+              <div class="stat-card card-green">
+          <div class="stat-name">Bella</div>
+          <div class="stat-rate">80%</div>
+          <div class="stat-desc">4 筆日誌</div>
+        </div>
+        <div class="stat-card card-green">
+          <div class="stat-name">An</div>
+          <div class="stat-rate">82%</div>
+          <div class="stat-desc">6 筆日誌</div>
+        </div>
+        <div class="stat-card card-green">
+          <div class="stat-name">Gloom</div>
+          <div class="stat-rate">82%</div>
+          <div class="stat-desc">3 筆日誌</div>
+        </div>
+        <div class="stat-card card-empty">
+          <div class="stat-name">陳信佳</div>
+          <div class="stat-rate">0%</div>
+          <div class="stat-desc">尚無資料</div>
+        </div>
+        <div class="stat-card card-red">
+          <div class="stat-name">賴柏羽</div>
+          <div class="stat-rate">24%</div>
+          <div class="stat-desc">3 筆日誌</div>
+        </div>
+        <div class="stat-card card-red">
+          <div class="stat-name">Chiehyi</div>
+          <div class="stat-rate">45%</div>
+          <div class="stat-desc">18 筆日誌</div>
+        </div>
+    </div>
+
+    <!-- 評分說明備註 -->
+    <div class="score-note">
+      💡 <strong>達成率評分說明：</strong>以上百分比由 Gemini AI 依據日誌內容自動評估，評分維度包含：<strong>AI 工具實際使用情況</strong>、工作任務完成度、產出具體程度。若日誌中記錄 AI 使用場景較少或以「觀望期」描述，評分會相對偏低。
+    </div>
+
+    <!-- 日誌明細表格 -->
+    <p class="section-title">日誌明細</p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>成員</th>
+            <th>日期</th>
+            <th>成果摘要</th>
+            <th>達成率</th>
+            <th>狀態</th>
+          </tr>
+        </thead>
+        <tbody>
+                    <tr>
+            <td>1</td>
+            <td><span class="member-tag member-chiehyi">Chiehyi</span></td>
+            <td>2026-05-28</td>
+            <td class="summary-cell">今日完成多項文件與報告處理，包含獎金分析、週追蹤報告及大豐環保策略分析等。AI 工具應用與數位轉型職能評分皆為觀望期，建議多嘗試將重複工作交由 AI 處理。</td>
+            <td>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width:24%;background:#dc3545"></div>
+                <span class="progress-label">24%</span>
+              </div>
+            </td>
+            <td><span class="rag-badge" style="background:#dc3545">🔴 待改善</span></td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td><span class="member-tag member-賴柏羽">賴柏羽</span></td>
+            <td>2026-05-28</td>
+            <td class="summary-cell">今日主要進行文件修改，無AI使用記錄，AI能力認證考核總分12/50，處於觀望期。</td>
+            <td>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width:24%;background:#dc3545"></div>
+                <span class="progress-label">24%</span>
+              </div>
+            </td>
+            <td><span class="rag-badge" style="background:#dc3545">🔴 待改善</span></td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td><span class="member-tag member-賴柏羽">賴柏羽</span></td>
+            <td>2026-05-28</td>
+            <td class="summary-cell">今日主要進行文件修改，無AI使用記錄，AI能力認證考核總分為12/50，處於觀望期。</td>
+            <td>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width:24%;background:#dc3545"></div>
+                <span class="progress-label">24%</span>
+              </div>
+            </td>
+            <td><span class="rag-badge" style="background:#dc3545">🔴 待改善</span></td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td><span class="member-tag member-an">An</span></td>
+            <td>2026-05-28</td>
+            <td class="summary-cell">完成新進人員體檢報告自動寄工安專案最終定版與排程，並建置招募管理系統本地開發環境，但伺服器重啟失敗待排查。</td>
+            <td>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width:75%;background:#e6a800"></div>
+                <span class="progress-label">75%</span>
+              </div>
+            </td>
+            <td><span class="rag-badge" style="background:#e6a800">🟡 部分達成</span></td>
+          </tr>
+          <tr>
+            <td>5</td>
+            <td><span class="member-tag member-bella">Bella</span></td>
+            <td>2026-05-28</td>
+            <td class="summary-cell">今日完成出勤異常通知腳本維護、薪資結算腳本規劃與設計、全興廠薪資試算、企業內訓平台Git初始化及證照通知功能開發，API問題待解決。</td>
+            <td>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width:75%;background:#e6a800"></div>
+                <span class="progress-label">75%</span>
+              </div>
+            </td>
+            <td><span class="rag-badge" style="background:#e6a800">🟡 部分達成</span></td>
+          </tr>
+          <tr>
+            <td>6</td>
+            <td><span class="member-tag member-gloom">Gloom</span></td>
+            <td>2026-05-28</td>
+            <td class="summary-cell">今日主要完成職安相關文件製作、GitHub Pages更新與問題排除，並探索AI應用於職安領域的可能性。</td>
+            <td>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width:85%;background:#28a745"></div>
+                <span class="progress-label">85%</span>
+              </div>
+            </td>
+            <td><span class="rag-badge" style="background:#28a745">🟢 已達成</span></td>
+          </tr>
+          <tr>
+            <td>7</td>
+            <td><span class="member-tag member-bella">Bella</span></td>
+            <td>2026-05-27</td>
+            <td class="summary-cell">完成出勤異常通知排程修正、健保資料下載驗證、全興廠薪資結構調整試算及例假日加班模板建立，並重建團保人數統計表。</td>
+            <td>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width:85%;background:#28a745"></div>
+                <span class="progress-label">85%</span>
+              </div>
+            </td>
+            <td><span class="rag-badge" style="background:#28a745">🟢 已達成</span></td>
+          </tr>
+          <tr>
+            <td>8</td>
+            <td><span class="member-tag member-an">An</span></td>
+            <td>2026-05-27</td>
+            <td class="summary-cell">完成每日出勤總表自動化腳本升級、召募達成率報表更新、出勤總表離職頁簽刷新、五股FB刊登職缺彙整、ATS API權限整合及體檢報告對應確認。</td>
+            <td>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width:75%;background:#e6a800"></div>
+                <span class="progress-label">75%</span>
+              </div>
+            </td>
+            <td><span class="rag-badge" style="background:#e6a800">🟡 部分達成</span></td>
+          </tr>
+          <tr>
+            <td>9</td>
+            <td><span class="member-tag member-gloom">Gloom</span></td>
+            <td>2026-05-27</td>
+            <td class="summary-cell">今日主要完成職安相關的圖像生成、網站部署與功能調整，並進行自動情報收集的初步規劃。部分功能仍需進一步修正與討論。</td>
+            <td>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width:75%;background:#e6a800"></div>
+                <span class="progress-label">75%</span>
+              </div>
+            </td>
+            <td><span class="rag-badge" style="background:#e6a800">🟡 部分達成</span></td>
+          </tr>
+          <tr>
+            <td>10</td>
+            <td><span class="member-tag member-chiehyi">Chiehyi</span></td>
+            <td>2026-05-27</td>
+            <td class="summary-cell">今日完成獎金分析、Agents-人力變化及大豐環保策略分析等三項工作，並處理多份文件。AI能力認證考核總分為12/50，處於觀望期。</td>
+            <td>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width:24%;background:#dc3545"></div>
+                <span class="progress-label">24%</span>
+              </div>
+            </td>
+            <td><span class="rag-badge" style="background:#dc3545">🔴 待改善</span></td>
+          </tr>
+          <tr>
+            <td>11</td>
+            <td><span class="member-tag member-an">An</span></td>
+            <td>2026-05-26</td>
+            <td class="summary-cell">完成ATS履歷統計腳本擴充，整合多來源數據並新增待報到/待面試名單。盤點健檢報告39位，規劃自動化寄送工安，但API權限不足。重構KM下載腳本並驗證成功。FB Page Token申請進入收尾。</td>
+            <td>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width:85%;background:#28a745"></div>
+                <span class="progress-label">85%</span>
+              </div>
+            </td>
+            <td><span class="rag-badge" style="background:#28a745">🟢 已達成</span></td>
+          </tr>
+          <tr>
+            <td>12</td>
+            <td><span class="member-tag member-bella">Bella</span></td>
+            <td>2026-05-26</td>
+            <td class="summary-cell">今日完成人評會晉升報告範本改版、4月勞健保檔案整理與彙整、健保資料自動下載腳本開發及全興廠調薪計畫試算，共產出多項文件。</td>
+            <td>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width:75%;background:#e6a800"></div>
+                <span class="progress-label">75%</span>
+              </div>
+            </td>
+            <td><span class="rag-badge" style="background:#e6a800">🟡 部分達成</span></td>
+          </tr>
+          <tr>
+            <td>13</td>
+            <td><span class="member-tag member-gloom">Gloom</span></td>
+            <td>2026-05-26</td>
+            <td class="summary-cell">今日主要完成職安互動式網站架構設計、職災原因分析檢視、法規鑑別與風險評估系統更新，並啟動承攬商線上化系統開發。</td>
+            <td>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width:85%;background:#28a745"></div>
+                <span class="progress-label">85%</span>
+              </div>
+            </td>
+            <td><span class="rag-badge" style="background:#28a745">🟢 已達成</span></td>
+          </tr>
+          <tr>
+            <td>14</td>
+            <td><span class="member-tag member-chiehyi">Chiehyi</span></td>
+            <td>2026-05-26</td>
+            <td class="summary-cell">今日完成獎金分析、員工人數與出勤更新、大豐環保策略分析等三項主要工作，並產出多份文件與報告。</td>
+            <td>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width:60%;background:#e6a800"></div>
+                <span class="progress-label">60%</span>
+              </div>
+            </td>
+            <td><span class="rag-badge" style="background:#e6a800">🟡 部分達成</span></td>
+          </tr>
+          <tr>
+            <td>15</td>
+            <td><span class="member-tag member-an">An</span></td>
+            <td>2026-05-25</td>
+            <td class="summary-cell">完成 FB Messenger Page Access Token SOP 指引，並新建 ATS 履歷預約統計腳本，目前正在執行中。</td>
+            <td>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width:90%;background:#28a745"></div>
+                <span class="progress-label">90%</span>
+              </div>
+            </td>
+            <td><span class="rag-badge" style="background:#28a745">🟢 已達成</span></td>
+          </tr>
+          <tr>
+            <td>16</td>
+            <td><span class="member-tag member-bella">Bella</span></td>
+            <td>2026-05-25</td>
+            <td class="summary-cell">完成勞健保費用彙整、日報腳本維護、全興廠調薪計畫及企業內訓平台遷移前置作業，並產出多份文件。</td>
+            <td>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width:85%;background:#28a745"></div>
+                <span class="progress-label">85%</span>
+              </div>
+            </td>
+            <td><span class="rag-badge" style="background:#28a745">🟢 已達成</span></td>
+          </tr>
+          <tr>
+            <td>17</td>
+            <td><span class="member-tag member-chiehyi">Chiehyi</span></td>
+            <td>2026-05-25</td>
+            <td class="summary-cell">今日無AI使用記錄，AI能力認證考核總分為12/50，處於觀望期，建議嘗試將重複工作交給AI。</td>
+            <td>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width:24%;background:#dc3545"></div>
+                <span class="progress-label">24%</span>
+              </div>
+            </td>
+            <td><span class="rag-badge" style="background:#dc3545">🔴 待改善</span></td>
+          </tr>
+          <tr>
+            <td>18</td>
+            <td><span class="member-tag member-chiehyi">Chiehyi</span></td>
+            <td>2026-05-22</td>
+            <td class="summary-cell">今日主要完成AI自動化腳本、Agents-人力變化及大豐環保策略分析等專案，產出多份HTML文件，但AI工具應用與數位轉型職能評分偏低。</td>
+            <td>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width:30%;background:#dc3545"></div>
+                <span class="progress-label">30%</span>
+              </div>
+            </td>
+            <td><span class="rag-badge" style="background:#dc3545">🔴 待改善</span></td>
+          </tr>
+          <tr>
+            <td>19</td>
+            <td><span class="member-tag member-an">An</span></td>
+            <td>2026-05-22</td>
+            <td class="summary-cell">完成FB Messenger token申請指引、准員工PDF下載endpoint探勘與Replit溝通、履歷篩選規則庫放寬與歷史重篩、ATS職缺迴歸測試、alias優先級重構及無規則職缺補齊，並修正方括號解析缺陷。</td>
+            <td>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width:85%;background:#28a745"></div>
+                <span class="progress-label">85%</span>
+              </div>
+            </td>
+            <td><span class="rag-badge" style="background:#28a745">🟢 已達成</span></td>
+          </tr>
+          <tr>
+            <td>20</td>
+            <td><span class="member-tag member-chiehyi">Chiehyi</span></td>
+            <td>2026-05-21</td>
+            <td class="summary-cell">今日完成多項AI自動化腳本開發與修正，包含溫室氣體排放引擎及HTML連接。同時處理獎金分析、EPS計算調整、員工人數整理及大豐環保策略分析等工作，並產出多份文件與程式碼。</td>
+            <td>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width:80%;background:#28a745"></div>
+                <span class="progress-label">80%</span>
+              </div>
+            </td>
+            <td><span class="rag-badge" style="background:#28a745">🟢 已達成</span></td>
+          </tr>
+          <tr>
+            <td>21</td>
+            <td><span class="member-tag member-chiehyi">Chiehyi</span></td>
+            <td>2026-05-20</td>
+            <td class="summary-cell">已完成獎金分析的EPS計算調整至8元，並定義了5-8元區間的分配比例及貢獻者權重。待完成主要貢獻者每人平均加權計算。</td>
+            <td>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width:70%;background:#e6a800"></div>
+                <span class="progress-label">70%</span>
+              </div>
+            </td>
+            <td><span class="rag-badge" style="background:#e6a800">🟡 部分達成</span></td>
+          </tr>
+          <tr>
+            <td>22</td>
+            <td><span class="member-tag member-an">An</span></td>
+            <td>2026-05-19</td>
+            <td class="summary-cell">今日主要處理多份文件與程式碼修改，並完成一項測試網址問題排查，AI使用量極低。</td>
+            <td>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width:80%;background:#28a745"></div>
+                <span class="progress-label">80%</span>
+              </div>
+            </td>
+            <td><span class="rag-badge" style="background:#28a745">🟢 已達成</span></td>
+          </tr>
+          <tr>
+            <td>23</td>
+            <td><span class="member-tag member-chiehyi">Chiehyi</span></td>
+            <td>2026-05-19</td>
+            <td class="summary-cell">今日主要完成獎金分析相關工作，並修改多份文件，但AI工具應用與數位轉型職能評分較低，仍處於觀望期。</td>
+            <td>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width:26%;background:#dc3545"></div>
+                <span class="progress-label">26%</span>
+              </div>
+            </td>
+            <td><span class="rag-badge" style="background:#dc3545">🔴 待改善</span></td>
+          </tr>
+          <tr>
+            <td>24</td>
+            <td><span class="member-tag member-賴柏羽">賴柏羽</span></td>
+            <td>2026-05-19</td>
+            <td class="summary-cell">今日無AI使用記錄，僅修改兩份文件，AI能力認證考核總分12/50，處於觀望期。</td>
+            <td>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width:24%;background:#dc3545"></div>
+                <span class="progress-label">24%</span>
+              </div>
+            </td>
+            <td><span class="rag-badge" style="background:#dc3545">🔴 待改善</span></td>
+          </tr>
+          <tr>
+            <td>25</td>
+            <td><span class="member-tag member-chiehyi">Chiehyi</span></td>
+            <td>2026-05-18</td>
+            <td class="summary-cell">今日無AI使用記錄，AI能力認證考核總分為12/50，處於觀望期，建議嘗試將重複小事交給AI。</td>
+            <td>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width:24%;background:#dc3545"></div>
+                <span class="progress-label">24%</span>
+              </div>
+            </td>
+            <td><span class="rag-badge" style="background:#dc3545">🔴 待改善</span></td>
+          </tr>
+          <tr>
+            <td>26</td>
+            <td><span class="member-tag member-chiehyi">Chiehyi</span></td>
+            <td>2026-05-15</td>
+            <td class="summary-cell">今日主要完成獎金分析相關工作，包含調整提撥率、價格區間折扣方案確認，並處理GitHub資安檢查及日誌寄送問題。產出多份獎金試算與簡報文件，並開發多個自動化腳本。</td>
+            <td>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width:70%;background:#e6a800"></div>
+                <span class="progress-label">70%</span>
+              </div>
+            </td>
+            <td><span class="rag-badge" style="background:#e6a800">🟡 部分達成</span></td>
+          </tr>
+          <tr>
+            <td>27</td>
+            <td><span class="member-tag member-chiehyi">Chiehyi</span></td>
+            <td>2026-05-14</td>
+            <td class="summary-cell">今日主要完成AI自動化腳本HTML修正及獎金分析，並產出多個程式碼檔案。AI工具應用成熟度16分，數位轉型職能指標10分。</td>
+            <td>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width:50%;background:#dc3545"></div>
+                <span class="progress-label">50%</span>
+              </div>
+            </td>
+            <td><span class="rag-badge" style="background:#dc3545">🔴 待改善</span></td>
+          </tr>
+          <tr>
+            <td>28</td>
+            <td><span class="member-tag member-chiehyi">Chiehyi</span></td>
+            <td>2026-05-14</td>
+            <td class="summary-cell">今日主要完成AI自動化腳本的HTML修正與獎金分析，並產出多個程式碼檔案。AI工具應用成熟度與數位轉型職能指標皆有待提升。</td>
+            <td>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width:53%;background:#dc3545"></div>
+                <span class="progress-label">53%</span>
+              </div>
+            </td>
+            <td><span class="rag-badge" style="background:#dc3545">🔴 待改善</span></td>
+          </tr>
+          <tr>
+            <td>29</td>
+            <td><span class="member-tag member-chiehyi">Chiehyi</span></td>
+            <td>2026-05-12</td>
+            <td class="summary-cell">今日完成大豐辦公室設計、獎金分析調整及Agents-人力變化更新，並產出多份人力分析與業務處理相關檔案，AI應用成熟度與數位轉型職能評分達中階使用者。</td>
+            <td>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width:64%;background:#e6a800"></div>
+                <span class="progress-label">64%</span>
+              </div>
+            </td>
+            <td><span class="rag-badge" style="background:#e6a800">🟡 部分達成</span></td>
+          </tr>
+          <tr>
+            <td>30</td>
+            <td><span class="member-tag member-chiehyi">Chiehyi</span></td>
+            <td>2026-05-11</td>
+            <td class="summary-cell">今日無AI使用記錄，AI能力認證考核總分為12/50，處於觀望期，建議嘗試將重複工作交由AI處理。</td>
+            <td>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width:24%;background:#dc3545"></div>
+                <span class="progress-label">24%</span>
+              </div>
+            </td>
+            <td><span class="rag-badge" style="background:#dc3545">🔴 待改善</span></td>
+          </tr>
+          <tr>
+            <td>31</td>
+            <td><span class="member-tag member-chiehyi">Chiehyi</span></td>
+            <td>2026-05-08</td>
+            <td class="summary-cell">今日完成多項AI自動化腳本、獎金分析、人力效益指標及ISO9001自動化相關工作，並產出多份文件與程式碼，AI能力評分為初階使用者。</td>
+            <td>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width:54%;background:#dc3545"></div>
+                <span class="progress-label">54%</span>
+              </div>
+            </td>
+            <td><span class="rag-badge" style="background:#dc3545">🔴 待改善</span></td>
+          </tr>
+          <tr>
+            <td>32</td>
+            <td><span class="member-tag member-chiehyi">Chiehyi</span></td>
+            <td>2026-05-07</td>
+            <td class="summary-cell">今日工作主要處理AI自動化腳本問題及獎金分析，並更新多份文件。AI工具應用與數位轉型職能評分較低，建議多嘗試AI應用。</td>
+            <td>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width:26%;background:#dc3545"></div>
+                <span class="progress-label">26%</span>
+              </div>
+            </td>
+            <td><span class="rag-badge" style="background:#dc3545">🔴 待改善</span></td>
+          </tr>
+          <tr>
+            <td>33</td>
+            <td><span class="member-tag member-chiehyi">Chiehyi</span></td>
+            <td>2026-05-06</td>
+            <td class="summary-cell">今日完成多項工作，包含自動寄信工具開發、工安與職安相關處理、獎金與人力效益分析資料分類，並修改多份文件與程式碼，總體表現為中階使用者。</td>
+            <td>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width:58%;background:#dc3545"></div>
+                <span class="progress-label">58%</span>
+              </div>
+            </td>
+            <td><span class="rag-badge" style="background:#dc3545">🔴 待改善</span></td>
+          </tr>
+          <tr>
+            <td>34</td>
+            <td><span class="member-tag member-chiehyi">Chiehyi</span></td>
+            <td>2026-05-05</td>
+            <td class="summary-cell">今日主要完成獎金分析的比例設定與策略營角色定義，並產出多個財務數據分析與獎金制度相關檔案，AI能力評分達初階使用者。</td>
+            <td>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width:52%;background:#dc3545"></div>
+                <span class="progress-label">52%</span>
+              </div>
+            </td>
+            <td><span class="rag-badge" style="background:#dc3545">🔴 待改善</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p class="page-footer">大豐環保科技 · HR 數據分析平台 · 自動化週報系統</p>
+  </div>
+
+</body>
+</html>

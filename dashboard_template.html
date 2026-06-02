@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>週工作日誌追蹤報告</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Segoe UI", "Microsoft JhengHei", Arial, sans-serif;
+      background: #f0f2f5;
+      color: #333;
+      min-height: 100vh;
+    }
+
+    /* ── 頂部 Header ── */
+    .page-header {
+      background: linear-gradient(135deg, #1a3c6e 0%, #2a6dd9 100%);
+      color: #fff;
+      padding: 28px 40px 24px;
+      box-shadow: 0 2px 12px rgba(0,0,0,.2);
+    }
+    .page-header h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      letter-spacing: .04em;
+    }
+    .page-header .subtitle {
+      margin-top: 6px;
+      font-size: .9rem;
+      opacity: .85;
+    }
+
+    /* ── 主容器 ── */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 32px 24px 60px;
+    }
+
+    /* ── 區塊標題 ── */
+    .section-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #1a3c6e;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #dbe4f0;
+    }
+
+    /* ── 摘要數字列 ── */
+    .summary-row {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+    }
+    .summary-card {
+      flex: 1;
+      min-width: 140px;
+      background: #fff;
+      border-radius: 12px;
+      padding: 20px 24px;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,.07);
+      border-top: 4px solid #c8d6ea;
+    }
+    .summary-card.green  { border-top-color: #28a745; }
+    .summary-card.yellow { border-top-color: #ffc107; }
+    .summary-card.red    { border-top-color: #dc3545; }
+    .summary-card .num {
+      font-size: 2.4rem;
+      font-weight: 800;
+      line-height: 1;
+      color: #1a3c6e;
+    }
+    .summary-card.green  .num { color: #28a745; }
+    .summary-card.yellow .num { color: #c99000; }
+    .summary-card.red    .num { color: #dc3545; }
+    .summary-card .lbl {
+      margin-top: 8px;
+      font-size: .85rem;
+      color: #666;
+      font-weight: 600;
+    }
+
+    /* ── 成員統計卡片 ── */
+    .stats-row {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+    }
+    .stat-card {
+      flex: 1;
+      min-width: 160px;
+      background: #fff;
+      border-radius: 12px;
+      padding: 22px 24px;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,.07);
+      border-left: 5px solid #c8d6ea;
+      transition: transform .15s;
+    }
+    .stat-card:hover { transform: translateY(-2px); }
+    .stat-card.card-green  { border-left-color: #28a745; }
+    .stat-card.card-yellow { border-left-color: #ffc107; }
+    .stat-card.card-red    { border-left-color: #dc3545; }
+    .stat-card.card-empty  { border-left-color: #adb5bd; opacity: .65; }
+    .stat-card .stat-name  { font-size: 1rem; font-weight: 700; color: #1a3c6e; }
+    .stat-card .stat-rate  { font-size: 2rem; font-weight: 800; margin: 8px 0 4px; color: #333; }
+    .stat-card .stat-desc  { font-size: .8rem; color: #888; }
+
+    /* ── 表格 ── */
+    .table-wrap {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.07);
+      overflow: hidden;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    thead tr {
+      background: #1a3c6e;
+      color: #fff;
+    }
+    thead th {
+      padding: 13px 14px;
+      text-align: left;
+      font-size: .85rem;
+      font-weight: 600;
+      letter-spacing: .03em;
+      white-space: nowrap;
+    }
+    tbody tr {
+      border-bottom: 1px solid #eef1f6;
+      transition: background .12s;
+    }
+    tbody tr:hover { background: #f5f8ff; }
+    tbody tr:last-child { border-bottom: none; }
+    tbody td {
+      padding: 12px 14px;
+      font-size: .88rem;
+      vertical-align: middle;
+    }
+
+    /* 成員標籤 */
+    .member-tag {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: .8rem;
+      font-weight: 700;
+      color: #fff;
+    }
+    .member-bella  { background: #7b5ea7; }
+    .member-an     { background: #2a7dd9; }
+    .member-gloom  { background: #e07b39; }
+    .member-陳信佳  { background: #1a8c6e; }
+    .member-賴柏羽  { background: #c0392b; }
+    .member-chiehyi { background: #6c757d; }
+
+    /* 摘要文字 */
+    .summary-cell { max-width: 320px; line-height: 1.5; color: #444; }
+
+    /* 進度條 */
+    .progress-bar-wrap {
+      position: relative;
+      background: #e9ecef;
+      border-radius: 6px;
+      height: 18px;
+      width: 120px;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      border-radius: 6px;
+      transition: width .4s ease;
+    }
+    .progress-label {
+      position: absolute;
+      right: 6px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: .72rem;
+      font-weight: 700;
+      color: #fff;
+      text-shadow: 0 1px 2px rgba(0,0,0,.4);
+    }
+
+    /* RAG 燈號 badge */
+    .rag-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: .78rem;
+      font-weight: 700;
+      color: #fff;
+      white-space: nowrap;
+    }
+
+    /* 空資料列 */
+    .no-data {
+      text-align: center;
+      padding: 40px !important;
+      color: #999;
+      font-size: .95rem;
+    }
+
+    /* ── 頁尾 ── */
+    .page-footer {
+      text-align: center;
+      margin-top: 40px;
+      font-size: .8rem;
+      color: #aaa;
+    }
+
+    /* ── 評分說明備註 ── */
+    .score-note {
+      background: #f8f9ff;
+      border: 1px solid #dbe4f0;
+      border-left: 4px solid #2a6dd9;
+      border-radius: 8px;
+      padding: 12px 18px;
+      margin-bottom: 28px;
+      font-size: .83rem;
+      color: #555;
+      line-height: 1.7;
+    }
+    .score-note strong { color: #1a3c6e; }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <div class="page-header">
+    <h1>📋 週工作日誌追蹤報告</h1>
+    <p class="subtitle">近 {{DAYS_BACK}} 天資料 &nbsp;·&nbsp; 產生時間：{{GENERATED_AT}}</p>
+  </div>
+
+  <div class="container">
+
+    <!-- 摘要數字 -->
+    <p class="section-title">整體摘要</p>
+    <div class="summary-row">
+      <div class="summary-card">
+        <div class="num">{{TOTAL_COUNT}}</div>
+        <div class="lbl">總日誌數</div>
+      </div>
+      <div class="summary-card green">
+        <div class="num">{{GREEN_COUNT}}</div>
+        <div class="lbl">🟢 已達成</div>
+      </div>
+      <div class="summary-card yellow">
+        <div class="num">{{YELLOW_COUNT}}</div>
+        <div class="lbl">🟡 部分達成</div>
+      </div>
+      <div class="summary-card red">
+        <div class="num">{{RED_COUNT}}</div>
+        <div class="lbl">🔴 待改善</div>
+      </div>
+    </div>
+
+    <!-- 成員達成概況 -->
+    <p class="section-title">成員達成概況</p>
+    <div class="stats-row">
+      {{STATS_CARDS}}
+    </div>
+
+    <!-- 評分說明備註 -->
+    <div class="score-note">
+      💡 <strong>達成率評分說明：</strong>以上百分比由 Gemini AI 依據日誌內容自動評估，評分維度包含：<strong>AI 工具實際使用情況</strong>、工作任務完成度、產出具體程度。若日誌中記錄 AI 使用場景較少或以「觀望期」描述，評分會相對偏低。
+    </div>
+
+    <!-- 日誌明細表格 -->
+    <p class="section-title">日誌明細</p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>成員</th>
+            <th>日期</th>
+            <th>成果摘要</th>
+            <th>達成率</th>
+            <th>狀態</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{TABLE_ROWS}}
+        </tbody>
+      </table>
+    </div>
+
+    <p class="page-footer">大豐環保科技 · HR 數據分析平台 · 自動化週報系統</p>
+  </div>
+
+</body>
+</html>
