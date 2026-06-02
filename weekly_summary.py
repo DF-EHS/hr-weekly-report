@@ -21,8 +21,13 @@ weekly_summary.py - 週工作彙整報告產生器
 import json
 import re
 import sys
+import io
 from datetime import datetime, timedelta, date
 from pathlib import Path
+
+# 排程執行時強制 stdout/stderr 使用 UTF-8
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
+sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding="utf-8", errors="replace")
 
 # ─────────────────────────────────────────────
 # 套件載入檢查
