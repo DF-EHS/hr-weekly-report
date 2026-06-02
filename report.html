@@ -467,9 +467,63 @@
       transition: transform .15s, box-shadow .15s;
     }
     .html-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 14px rgba(13,102,81,.45); }
-    .html-btn:active { transform: translateY(0); }  </style>
+    .html-btn:active { transform: translateY(0); }
+
+    /* ── 密碼保護覆蓋層 ── */
+    #pw-overlay {
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(135deg, #0d3b52 0%, #07212f 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+    #pw-box {
+      background: rgba(255,255,255,.08);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255,255,255,.18);
+      border-radius: 20px;
+      padding: 48px 44px 40px;
+      width: 360px;
+      text-align: center;
+      box-shadow: 0 24px 60px rgba(0,0,0,.4);
+    }
+    #pw-box .lock-icon { font-size: 3rem; margin-bottom: 16px; }
+    #pw-box h2 { color: #fff; font-size: 1.2rem; font-weight: 700; margin-bottom: 6px; }
+    #pw-box p { color: rgba(255,255,255,.65); font-size: .85rem; margin-bottom: 28px; }
+    #pw-input {
+      width: 100%; padding: 13px 16px; border-radius: 10px;
+      border: 2px solid rgba(255,255,255,.25);
+      background: rgba(255,255,255,.12);
+      color: #fff; font-size: 1rem; letter-spacing: .1em;
+      outline: none; transition: border-color .2s; margin-bottom: 14px;
+    }
+    #pw-input::placeholder { color: rgba(255,255,255,.4); letter-spacing: normal; }
+    #pw-input:focus { border-color: rgba(255,255,255,.6); }
+    #pw-btn {
+      width: 100%; padding: 13px; border-radius: 10px; border: none;
+      background: #1a6e8a; color: #fff; font-size: 1rem; font-weight: 700;
+      cursor: pointer; transition: background .2s, transform .1s;
+    }
+    #pw-btn:hover { background: #135870; }
+    #pw-btn:active { transform: scale(.98); }
+    #pw-error { color: #ff7b7b; font-size: .83rem; margin-top: 12px; min-height: 1.2em; }
+  </style>
 </head>
 <body>
+
+  <!-- 密碼保護覆蓋層 -->
+  <div id="pw-overlay">
+    <div id="pw-box">
+      <div class="lock-icon">🔒</div>
+      <h2>HR 工作日誌報告系統</h2>
+      <p>請輸入密碼以繼續</p>
+      <input id="pw-input" type="password" placeholder="輸入密碼" autocomplete="off" />
+      <button id="pw-btn" onclick="checkPw()">確認</button>
+      <div id="pw-error"></div>
+    </div>
+  </div>
 
   <!-- Header -->
   <div class="page-header">
@@ -1231,6 +1285,40 @@
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
+    }
+  </script>
+
+  <script>
+    // SHA-256 雜湊驗證（明文密碼不存在原始碼中）
+    const HASH = 'd5fbeac07469116e173bca8da8b3ff0a00c9d779c3e582f138102db0f2046110';
+    const SESSION_KEY = 'hr_report_auth';
+
+    async function sha256(str) {
+      const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+      return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    async function checkPw() {
+      const val = document.getElementById('pw-input').value;
+      const h = await sha256(val);
+      if (h === HASH) {
+        sessionStorage.setItem(SESSION_KEY, '1');
+        document.getElementById('pw-overlay').style.display = 'none';
+      } else {
+        const err = document.getElementById('pw-error');
+        err.textContent = '密碼錯誤，請重試。';
+        document.getElementById('pw-input').value = '';
+        document.getElementById('pw-input').focus();
+        setTimeout(() => { err.textContent = ''; }, 3000);
+      }
+    }
+
+    document.getElementById('pw-input').addEventListener('keydown', e => {
+      if (e.key === 'Enter') checkPw();
+    });
+
+    if (sessionStorage.getItem(SESSION_KEY) === '1') {
+      document.getElementById('pw-overlay').style.display = 'none';
     }
   </script>
 
