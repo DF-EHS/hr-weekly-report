@@ -23,9 +23,14 @@ import io
 from datetime import datetime, timedelta, date
 from pathlib import Path
 
-# 排程執行時強制 stdout/stderr 使用 UTF-8，避免 cp950 編碼錯誤
-sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
-sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding="utf-8", errors="replace")
+# 排程執行時強制 stdout/stderr 使用 UTF-8，避免 cp950 編碼錯誤（循環 import 時跳過）
+try:
+    if hasattr(sys.stdout, 'buffer') and getattr(sys.stdout, 'encoding', '').lower() != 'utf-8':
+        sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
+    if hasattr(sys.stderr, 'buffer') and getattr(sys.stderr, 'encoding', '').lower() != 'utf-8':
+        sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding="utf-8", errors="replace")
+except (AttributeError, ValueError):
+    pass
 
 # ─────────────────────────────────────────────
 # 套件載入檢查
@@ -57,27 +62,9 @@ GEMINI_URL   = (
 )
 
 # ―――――――――――――――――――――――――――――――――――――――――――
-# 從 hr_tracker.py 匯入週追蹤報告相關函式
+# hr_tracker 延遲載入（避免循環 import，實際載入在 main() 內）
 # ―――――――――――――――――――――――――――――――――――――――――――
-try:
-    from hr_tracker import (
-        read_excel_projects,
-        call_gemini_tracker,
-        merge_ai_results,
-        build_table_rows as build_tracker_rows,
-        build_summary_stats as build_tracker_stats,
-        export_excel as tracker_export_excel,
-        EXCEL_PATH as TRACKER_EXCEL_PATH,
-        EXCEL_TO_OUTLOOK,
-        RAG_META as TRACKER_RAG_META,
-        OWNER_COLORS,
-        _owner_badge,
-        _rag_badge as _tracker_rag_badge,
-        _rate_bar as _tracker_rate_bar,
-    )
-    _TRACKER_AVAILABLE = True
-except ImportError:
-    _TRACKER_AVAILABLE = False
+_TRACKER_AVAILABLE = False  # 實際值在 main() 中設定
 
 _WEEKDAY_ZH = ["一", "二", "三", "四", "五", "六", "日"]
 
@@ -112,9 +99,14 @@ def load_config() -> dict:
 # 週期計算
 # ─────────────────────────────────────────────
 def get_week_range(ref: date | None = None) -> tuple[date, date]:
-    """計算 ref 所在的「週三 → 下週二」週期"""
+    """計算 ref 所在的「週三 → 下週二」週期。
+    若 ref 為 None（即自動執行），且今天是週三（報告產出日），
+    則以昨天（剛結束的週二）為基準，回傳剛完成的那一週。"""
     if ref is None:
         ref = date.today()
+        # 週三是報告產出日，此時應產出剛結束的那週（前一週三~昨日週二）
+        if ref.weekday() == 2:
+            ref = ref - timedelta(days=1)
     days_since_wed = (ref.weekday() - 2) % 7
     week_start = ref - timedelta(days=days_since_wed)
     week_end   = week_start + timedelta(days=6)
@@ -205,7 +197,10 @@ def get_emails(subjects: list[str], days_back: int,
 def call_gemini_single(api_key: str, body: str) -> dict:
     prompt = (
         "請分析以下工作日誌內容，並以 JSON 格式回傳三個欄位：\n"
-        "1. summary：50 字以內的工作成果摘要（繁體中文）\n"
+        "1. summary：50 字以內的工作成果摘要（繁體中文）。"
+        "摘要只聚焦實際完成的工作內容與成果，"
+        "嚴禁提及任何職能評分或認證考核的具體分數（如「X/50 分」「總分 12/50」「總評 31/50 分」等）。"
+        "（「觀望期」「初階使用者」等等級描述則可保留。）\n"
         "2. completion_rate：整體工作達成率，0 到 100 之間的整數\n"
         "3. rag_status：依達成率判定燈號（green = 80 以上、yellow = 60-79、red = 59 以下）\n\n"
         "只回傳 JSON 物件，不要加任何說明文字或 markdown 標記。\n\n"
@@ -531,6 +526,28 @@ def main() -> None:
     # ── 週追蹤報告：分析項目目標 ────────────────────────────────
     tracker_rows_html = ""
     tracker_stats: dict = {"total": 0, "done": 0, "green": 0, "yellow": 0, "red": 0, "none": 0}
+
+    # 延遲載入 hr_tracker（避免模組層級循環 import）
+    global _TRACKER_AVAILABLE
+    try:
+        from hr_tracker import (
+            read_excel_projects,
+            call_gemini_tracker,
+            merge_ai_results,
+            build_table_rows as build_tracker_rows,
+            build_summary_stats as build_tracker_stats,
+            export_excel as tracker_export_excel,
+            EXCEL_PATH as TRACKER_EXCEL_PATH,
+            EXCEL_TO_OUTLOOK,
+            RAG_META as TRACKER_RAG_META,
+            OWNER_COLORS,
+            _owner_badge,
+            _rag_badge as _tracker_rag_badge,
+            _rate_bar as _tracker_rate_bar,
+        )
+        _TRACKER_AVAILABLE = True
+    except ImportError:
+        _TRACKER_AVAILABLE = False
 
     if _TRACKER_AVAILABLE and TRACKER_EXCEL_PATH.exists():
         print()
