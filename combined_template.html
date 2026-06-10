@@ -648,6 +648,68 @@
       var color = v >= 100 ? '#1a8c6e' : v >= 80 ? '#28a745' : v >= 60 ? '#e6a800' : '#dc3545';
       bar.style.width = v + '%';
       bar.style.background = color;
+      inp.setAttribute('value', v);            // 保留修改值，下載 HTML 時帶得出去
+    }
+    // RAG 狀態選項：[值, 顏色, 顯示文字]
+    var RAG_OPTIONS = [
+      ['已完成', '#1a8c6e', '✅ 已完成'],
+      ['正常推進', '#28a745', '🟢 正常推進'],
+      ['待改善', '#e6a800', '🟡 待改善'],
+      ['卡關', '#dc3545', '🔴 卡關'],
+      ['本週無資料', '#adb5bd', '⚪ 本週無資料']
+    ];
+    function startEdit(btn) {
+      var tr = btn.closest('tr');
+      if (tr.classList.contains('editing')) return;
+      tr.classList.add('editing');
+      // 本週成果 / 卡關需求 → 可直接編輯文字
+      tr.querySelectorAll('.result-cell, .blocker-cell').forEach(function (td) {
+        td.setAttribute('contenteditable', 'true');
+        td.style.background = '#fffbe6';
+        td.style.outline = '1px dashed #e6a800';
+      });
+      // RAG → 換成下拉選單
+      var ragCell = tr.querySelector('.rag-cell');
+      if (ragCell && !ragCell.querySelector('select')) {
+        var cur = tr.getAttribute('data-rag') || '';
+        var sel = document.createElement('select');
+        sel.style.cssText = 'padding:4px;border-radius:6px;font-size:13px;';
+        RAG_OPTIONS.forEach(function (o) {
+          var opt = document.createElement('option');
+          opt.value = o[0]; opt.textContent = o[2];
+          if (o[0] === cur) opt.selected = true;
+          sel.appendChild(opt);
+        });
+        ragCell.innerHTML = '';
+        ragCell.appendChild(sel);
+      }
+      btn.textContent = '✓ 完成';
+      btn.setAttribute('onclick', 'finishEdit(this)');
+    }
+    function finishEdit(btn) {
+      var tr = btn.closest('tr');
+      tr.classList.remove('editing');
+      tr.querySelectorAll('.result-cell, .blocker-cell').forEach(function (td) {
+        td.removeAttribute('contenteditable');
+        td.style.background = '';
+        td.style.outline = '';
+      });
+      // RAG 下拉 → 寫回彩色標籤
+      var ragCell = tr.querySelector('.rag-cell');
+      var sel = ragCell ? ragCell.querySelector('select') : null;
+      if (sel) {
+        var found = RAG_OPTIONS[4];
+        for (var i = 0; i < RAG_OPTIONS.length; i++) {
+          if (RAG_OPTIONS[i][0] === sel.value) { found = RAG_OPTIONS[i]; break; }
+        }
+        ragCell.innerHTML = '<span class="rag-badge" style="background:' + found[1] + '">' + found[2] + '</span>';
+        tr.setAttribute('data-rag', sel.value);
+      }
+      // 達成率 → 把目前值寫進 value 屬性，確保下載保留
+      var inp = tr.querySelector('.rate-input');
+      if (inp) { inp.setAttribute('value', inp.value); tr.setAttribute('data-rate', inp.value); }
+      btn.textContent = '✏️ 編輯';
+      btn.setAttribute('onclick', 'startEdit(this)');
     }
     function downloadHTML() {
       /* 下載當前頁面完整 HTML */
