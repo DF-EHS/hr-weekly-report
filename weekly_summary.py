@@ -3,7 +3,7 @@
 """
 weekly_summary.py - 週工作彙整報告產生器
 
-彙整週期：每週三（含）到下週二（含），共 7 天。
+彙整週期：每週一（含）到週日（含），共 7 天。
 功能：
   1. 自動計算當前彙整週期
   2. 讀取 Outlook 本地資料夾，取得週期內每位成員的所有日誌信件
@@ -69,6 +69,7 @@ _MEMBER_COLORS: dict[str, str] = {
     "陳信佳":  "#1a8c6e",
     "賴柏羽":  "#c0392b",
     "chiehyi": "#6c757d",
+    "phebe":   "#d6336c",
 }
 
 # RAG 顏色與文字
@@ -96,19 +97,22 @@ def load_config() -> dict:
 # ─────────────────────────────────────────────
 def get_week_range(ref: date | None = None) -> tuple[date, date]:
     """
-    以 ref 為基準，計算其所在的「週三 → 下週二」週期。
+    計算「週一 → 週日」週期（共 7 天）。
     weekday(): Mon=0, Tue=1, Wed=2, Thu=3, Fri=4, Sat=5, Sun=6
 
-    範例（今天為週四 2026-05-28）：
-      week_start = 2026-05-27（週三）
-      week_end   = 2026-06-02（週二）
+    ・手動指定 ref：回傳 ref 所在的週一~週日週期。
+      範例（ref = 2026-06-03 週三）→ week_start=2026-06-01、week_end=2026-06-07。
+    ・ref 為 None（自動排程）：回傳「最近一個已結束」的週一~週日週期，
+      以上一個已過完的週日作為週期結尾（例：於 6/10 週三執行 → 06/01~06/07）。
     """
     if ref is None:
         ref = date.today()
-    days_since_wed = (ref.weekday() - 2) % 7   # 距上一個週三幾天
-    week_start = ref - timedelta(days=days_since_wed)
-    week_end   = week_start + timedelta(days=6)
-    return week_start, week_end
+        # 自動排程：取最近一個已結束的週日作為週期結尾
+        last_sunday = ref - timedelta(days=ref.weekday() + 1)
+        return last_sunday - timedelta(days=6), last_sunday
+    # 手動指定日期：回傳該日所在的週一~週日
+    week_start = ref - timedelta(days=ref.weekday())
+    return week_start, week_start + timedelta(days=6)
 
 
 def format_date_zh(d: date) -> str:

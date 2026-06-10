@@ -8,7 +8,7 @@ generate_report.py - HR 工作日誌合併報告產生器
 特點：
   - Outlook 只讀取一次，效率更高
   - 兩個 Tab 共用同一頁面，無需切換檔案
-  - 週期定義：每週三 ～ 下週二
+  - 週期定義：每週一 ～ 週日
 
 使用方式：
   python generate_report.py               # 以今天推算本週期
@@ -75,6 +75,7 @@ _MEMBER_COLORS: dict[str, str] = {
     "陳信佳":  "#1a8c6e",
     "賴柏羽":  "#c0392b",
     "chiehyi": "#6c757d",
+    "phebe":   "#d6336c",
 }
 
 _RAG_META: dict[str, tuple[str, str]] = {
@@ -99,18 +100,19 @@ def load_config() -> dict:
 # 週期計算
 # ─────────────────────────────────────────────
 def get_week_range(ref: date | None = None) -> tuple[date, date]:
-    """計算 ref 所在的「週三 → 下週二」週期。
-    若 ref 為 None（即自動執行），且今天是週三（報告產出日），
-    則以昨天（剛結束的週二）為基準，回傳剛完成的那一週。"""
+    """計算「週一 → 週日」週期（共 7 天）。
+
+    ・手動指定 ref：回傳 ref 所在的週一~週日週期。
+    ・ref 為 None（自動排程）：回傳「最近一個已結束」的週一~週日週期，
+      以上一個已過完的週日作為週期結尾（例：於 6/10 週三執行 → 06/01~06/07）。"""
     if ref is None:
         ref = date.today()
-        # 週三是報告產出日，此時應產出剛結束的那週（前一週三~昨日週二）
-        if ref.weekday() == 2:
-            ref = ref - timedelta(days=1)
-    days_since_wed = (ref.weekday() - 2) % 7
-    week_start = ref - timedelta(days=days_since_wed)
-    week_end   = week_start + timedelta(days=6)
-    return week_start, week_end
+        # 自動排程：取最近一個已結束的週日作為週期結尾
+        last_sunday = ref - timedelta(days=ref.weekday() + 1)
+        return last_sunday - timedelta(days=6), last_sunday
+    # 手動指定日期：回傳該日所在的週一~週日
+    week_start = ref - timedelta(days=ref.weekday())
+    return week_start, week_start + timedelta(days=6)
 
 
 def fmt_date_zh(d: date) -> str:

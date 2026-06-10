@@ -20,9 +20,14 @@ import io
 from datetime import date, datetime, timedelta
 from pathlib import Path
 
-# 排程執行時強制 stdout/stderr 使用 UTF-8
-sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
-sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding="utf-8", errors="replace")
+# 排程執行時強制 stdout/stderr 使用 UTF-8，避免循環 import 時重複包裝
+try:
+    if hasattr(sys.stdout, 'buffer') and getattr(sys.stdout, 'encoding', '').lower() != 'utf-8':
+        sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
+    if hasattr(sys.stderr, 'buffer') and getattr(sys.stderr, 'encoding', '').lower() != 'utf-8':
+        sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding="utf-8", errors="replace")
+except (AttributeError, ValueError):
+    pass
 
 try:
     import requests
@@ -67,6 +72,13 @@ EXCEL_TO_OUTLOOK: dict[str, str] = {
     "婕誼": "Chiehyi",
     "詩紜": "An",
     "Bella": "Bella",
+    "佑毓": "Gloom",
+}
+
+# 協助型成員：在 Excel 沒有自己負責的項目，依日誌內容併入既有項目。
+# member 名稱（identify_sender 輸出）→ 主要協助對象（供 AI 對應參考）。
+ASSIST_MEMBERS: dict[str, str] = {
+    "Phebe": "育杉(Bella)、詩紜(An)、Chiehyi",
 }
 
 # RAG 四種狀態定義（用於 Gemini prompt 與 HTML 渲染）
@@ -280,6 +292,90 @@ def merge_ai_results(projects: list[dict], ai_results: list[dict]) -> None:
 
 
 # ─────────────────────────────────────────────
+# 協助型成員：依內容併入既有項目
+# ─────────────────────────────────────────────
+def call_gemini_assist(
+    api_key: str,
+    assist_name: str,
+    assist_target: str,
+    weekly_logs: str,
+    all_projects: list[dict],
+) -> list[dict]:
+    """
+    分析協助型成員（如 Phebe）的本週日誌，判斷其貢獻到哪些既有項目，
+    回傳 [{"idx": 項目索引, "contribution": "協助成果摘要"}]，未貢獻者不列入。
+    """
+    import requests
+
+    goals_for_prompt = [
+        {"idx": i, "goal": p["goal"]} for i, p in enumerate(all_projects)
+    ]
+    goals_json = json.dumps(goals_for_prompt, ensure_ascii=False, indent=2)
+
+    prompt = (
+        f"你是一位高階幕僚助理。以下是協助型同仁「{assist_name}」本週的工作日誌。\n"
+        f"{assist_name} 沒有自己負責的項目，主要協助 {assist_target} 推進自動化工作。\n\n"
+        f"【{assist_name} 本週工作日誌】\n{weekly_logs[:8000]}\n\n"
+        f"【現有項目清單（idx 為索引）】\n{goals_json}\n\n"
+        f"請依日誌內容判斷 {assist_name} 實際貢獻到上述哪些項目（可對應多個，也可能不對應）。\n"
+        "對每個『她有實際貢獻』的項目，輸出一則 30-60 字的協助成果摘要（繁體中文）。\n"
+        "沒有實際貢獻的項目請勿列入。\n"
+        "只回傳 JSON 陣列，不要任何說明文字或 markdown 標記。\n"
+        '格式：[{"idx":0,"contribution":"協助完成..."}]'
+    )
+
+    payload = {
+        "contents": [{"parts": [{"text": prompt}]}],
+        "generationConfig": {
+            "temperature": 0.2,
+            "maxOutputTokens": 2048,
+            "thinkingConfig": {"thinkingBudget": 0},
+        },
+    }
+    gemini_url = (
+        "https://generativelanguage.googleapis.com/v1beta/models/"
+        "gemini-2.5-flash:generateContent"
+    )
+
+    try:
+        resp = requests.post(f"{gemini_url}?key={api_key}", json=payload, timeout=90)
+        resp.raise_for_status()
+        data = resp.json()
+        parts = data["candidates"][0]["content"]["parts"]
+        text  = "".join(p.get("text", "") for p in parts if not p.get("thought", False))
+        text  = re.sub(r"^```(?:json)?\s*", "", text.strip())
+        text  = re.sub(r"\s*```$", "", text).strip()
+        m = re.search(r"\[[\s\S]*\]", text)
+        if m:
+            results = json.loads(m.group(0))
+            if isinstance(results, list):
+                return results
+    except Exception as exc:
+        print(f"    ⚠️  Gemini 協助分析失敗：{exc}")
+    return []
+
+
+def merge_assist_results(
+    all_projects: list[dict], assist_name: str, assist_results: list[dict]
+) -> int:
+    """將協助型成員的成果併入對應項目的 weekly_result，回傳實際併入筆數。"""
+    _placeholder = {"", "本週無日誌提交", "本週無實質進度", "本週無資料"}
+    merged = 0
+    for item in assist_results:
+        idx = item.get("idx")
+        contrib = str(item.get("contribution", "")).strip()
+        if not isinstance(idx, int) or not (0 <= idx < len(all_projects)) or not contrib:
+            continue
+        p = all_projects[idx]
+        tag = f"🤝 {assist_name} 協助：{contrib}"
+        cur = (p.get("weekly_result") or "").strip()
+        # 原成果為空或佔位字串 → 直接以協助成果取代；否則附加於後
+        p["weekly_result"] = tag if cur in _placeholder else f"{cur}\n{tag}"
+        merged += 1
+    return merged
+
+
+# ─────────────────────────────────────────────
 # HTML 產生
 # ─────────────────────────────────────────────
 def _owner_badge(owner: str) -> str:
@@ -334,7 +430,13 @@ def build_table_rows(projects: list[dict]) -> str:
                 "卡關": "row-red",
             }.get(p["rag"], "row-none")
 
-            row = f'<tr class="{rag_class}">\n'
+            # 列唯一識別（供 JS 編輯用）
+            import hashlib as _hashlib
+            row_key = _hashlib.md5(f"{cat}_{p['goal']}".encode()).hexdigest()[:10]
+            ai_rate_val = p["ai_rate"] if p["ai_rate"] is not None else p["base_rate"]
+
+            row = (f'<tr class="{rag_class}" data-row-key="{row_key}" '
+                   f'data-rag="{p["rag"] or ""}" data-rate="{ai_rate_val}">\n')
 
             # 項目名稱（僅第一行用 rowspan）
             if is_first:
@@ -361,6 +463,8 @@ def build_table_rows(projects: list[dict]) -> str:
                 f'  <td class="deadline-cell">{p["deadline"]}</td>\n'
                 f'  <td class="rag-cell">{_rag_badge(p["rag"])}</td>\n'
                 f'  <td class="blocker-cell">{blocker_html}</td>\n'
+                f'  <td class="action-cell">'
+                f'<button class="edit-btn" onclick="startEdit(this)">✏️ 編輯</button></td>\n'
                 f'</tr>\n'
             )
             rows_html.append(row)
@@ -445,10 +549,10 @@ def export_excel(projects: list[dict], ref_date=None, week_start=None, week_end=
     if ref_date is None:
         ref_date = _date.today()
 
-    # 實際週期由外部傳入，避免重複推算導致屏期錯位
+    # 實際週期由外部傳入，避免重複推算導致週期錯位
     if week_start is None or week_end is None:
-        days_since_wed = (ref_date.weekday() - 2) % 7
-        week_start = ref_date - timedelta(days=days_since_wed)
+        # 回退：取 ref_date 所在的週一~週日
+        week_start = ref_date - timedelta(days=ref_date.weekday())
         week_end   = week_start + timedelta(days=6)
 
     date_range   = f"{week_start.strftime('%m%d')}~{week_end.strftime('%m%d')}"
@@ -615,7 +719,7 @@ def main() -> None:
             e["sender_name"], e["sender_email"], config["sender_mapping"]
         )
 
-    # 只取本週信件（週三 ~ 下週二）
+    # 只取本週信件（週一 ~ 週日）
     week_emails = [
         e for e in all_emails
         if week_start <= e["date_obj"] <= week_end
@@ -625,14 +729,19 @@ def main() -> None:
 
     # ── 6. 依成員分組週日誌 ────────────────────
     member_logs: dict[str, list[str]] = {}
+    assist_logs: dict[str, list[str]] = {}   # 協助型成員（如 Phebe）的日誌
     for e in week_emails:
         m = e["member"]
+        header = f"=== {e['date']} | {e['subject']} ===\n"
+        # 協助型成員：另行收集，稍後依內容併入既有項目
+        if m in ASSIST_MEMBERS:
+            assist_logs.setdefault(m, []).append(header + e["body"])
+            continue
         # 只保留被 EXCEL_TO_OUTLOOK 對應到的成員
         if m not in EXCEL_TO_OUTLOOK.values():
             continue
         if m not in member_logs:
             member_logs[m] = []
-        header = f"=== {e['date']} | {e['subject']} ===\n"
         member_logs[m].append(header + e["body"])
 
     # ── 7. Gemini 幕僚分析（每位追蹤成員一次） ──
@@ -676,6 +785,22 @@ def main() -> None:
                 p["rag"], "⚪"
             )
             print(f"    {rag_icon}  {p['goal'][:30]}  → {p['ai_rate']}%  {p['rag']}")
+
+    print()
+
+    # ── 7b. 協助型成員：依內容併入既有項目 ──────
+    for assist_name, assist_target in ASSIST_MEMBERS.items():
+        logs_combined = "\n\n".join(assist_logs.get(assist_name, []))
+        if not logs_combined.strip():
+            print(f"  ⏭️  [{assist_name}] 本週無日誌，跳過協助分析")
+            continue
+        print(f"  🤝 [{assist_name}] 共 {len(assist_logs.get(assist_name, []))} 封日誌"
+              f"，依內容比對 {len(all_projects)} 個項目...")
+        assist_results = call_gemini_assist(
+            api_key, assist_name, assist_target, logs_combined, all_projects
+        )
+        merged = merge_assist_results(all_projects, assist_name, assist_results)
+        print(f"    ✅ 併入 {merged} 個項目")
 
     print()
 
