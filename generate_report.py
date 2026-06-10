@@ -442,9 +442,10 @@ def main() -> None:
             e["sender_name"], e["sender_email"], config["sender_mapping"]
         )
 
-    # 6. 日誌明細只保留週期開始日以後的信件（週期開始 = week_start）
-    all_emails = [e for e in all_emails if e["date_obj"] >= week_start]
-    print(f"   筛選後：{len(all_emails)} 封（{week_start.strftime('%m/%d')} 起）\n")
+    # 6. 日誌明細與週彙整都只保留本週期（week_start ~ week_end）內的信件
+    all_emails = [e for e in all_emails if week_start <= e["date_obj"] <= week_end]
+    print(f"   筛選後：{len(all_emails)} 封"
+          f"（{week_start.strftime('%m/%d')}~{week_end.strftime('%m/%d')}）\n")
 
     # ── 日誌明細：分析所有信件 ──────────────
     print("━" * 54)
