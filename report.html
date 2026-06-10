@@ -386,49 +386,6 @@
     .trow-none   { background: #fafafa; }
     .tracker-tbl tbody tr:hover td { filter: brightness(.97); }
 
-    /* ── 編輯模式 ── */
-    .col-action { width: 78px; }
-    .action-cell { text-align: center; vertical-align: middle; }
-    .edit-btn {
-      background: #4a90d9; color: #fff;
-      border: none; border-radius: 6px;
-      padding: 4px 10px; font-size: .78rem; cursor: pointer;
-      white-space: nowrap;
-    }
-    .edit-btn:hover { background: #2d72b8; }
-    .save-btn {
-      background: #28a745; color: #fff;
-      border: none; border-radius: 6px;
-      padding: 4px 8px; font-size: .78rem; cursor: pointer;
-      display: block; width: 100%; margin-bottom: 4px;
-    }
-    .save-btn:hover { background: #1e7e34; }
-    .cancel-btn {
-      background: #6c757d; color: #fff;
-      border: none; border-radius: 6px;
-      padding: 4px 8px; font-size: .78rem; cursor: pointer;
-      display: block; width: 100%;
-    }
-    .cancel-btn:hover { background: #545b62; }
-    .edit-textarea {
-      width: 100%; min-height: 52px; font-size: .82rem;
-      border: 1.5px solid #4a90d9; border-radius: 4px;
-      padding: 4px; resize: vertical; font-family: inherit;
-    }
-    .edit-select {
-      width: 100%; font-size: .82rem;
-      border: 1.5px solid #4a90d9; border-radius: 4px;
-      padding: 4px; font-family: inherit;
-    }
-    .row-edited td { border-left: 3px solid #4a90d9 !important; }
-    .export-corrections-btn {
-      background: #6f42c1; color: #fff;
-      border: none; border-radius: 8px;
-      padding: 8px 16px; font-size: .85rem;
-      font-weight: 600; cursor: pointer; margin-left: 8px;
-    }
-    .export-corrections-btn:hover { background: #5a32a3; }
-
     .owner-bdg {
       display: inline-block; padding: 3px 10px; border-radius: 50px;
       font-size: .78rem; font-weight: 600; color: #fff; white-space: nowrap;
@@ -501,8 +458,8 @@
     <div class="header-top">
       <h1>📋 HR 工作日誌報告系統</h1>
       <div class="header-meta">
-        <span class="week-badge">📅 2026/05/27（三） ~ 2026/06/02（二）</span>
-        <span>產生時間：2026-06-03 11:23</span>
+        <span class="week-badge">📅 2026/06/01（一） ~ 2026/06/07（日）</span>
+        <span>產生時間：2026-06-10 09:32</span>
       </div>
     </div>
     <!-- Tab 導覽 -->
@@ -524,14 +481,14 @@
       </div>
 
       <!-- 摘要數字 -->
-      <p class="section-title">日誌概覽（05/27 起）</p>
+      <p class="section-title">日誌概覽（06/01 起）</p>
       <div class="summary-row">
         <div class="summary-card">
-          <div class="snum">31</div>
+          <div class="snum">46</div>
           <div class="slbl">總日誌數</div>
         </div>
         <div class="summary-card green">
-          <div class="snum">23</div>
+          <div class="snum">35</div>
           <div class="slbl">🟢 已達成</div>
         </div>
         <div class="summary-card yellow">
@@ -539,7 +496,7 @@
           <div class="slbl">🟡 部分達成</div>
         </div>
         <div class="summary-card red">
-          <div class="snum">8</div>
+          <div class="snum">11</div>
           <div class="slbl">🔴 待改善</div>
         </div>
       </div>
@@ -549,18 +506,18 @@
       <div class="stats-row">
                 <div class="stat-card card-green">
           <div class="stat-name">Bella</div>
-          <div class="stat-rate">87%</div>
-          <div class="stat-desc">5 筆日誌</div>
+          <div class="stat-rate">90%</div>
+          <div class="stat-desc">7 筆日誌</div>
         </div>
-        <div class="stat-card card-yellow">
+        <div class="stat-card card-green">
           <div class="stat-name">An</div>
-          <div class="stat-rate">76%</div>
-          <div class="stat-desc">6 筆日誌</div>
+          <div class="stat-rate">81%</div>
+          <div class="stat-desc">14 筆日誌</div>
         </div>
         <div class="stat-card card-yellow">
           <div class="stat-name">Gloom</div>
-          <div class="stat-rate">72%</div>
-          <div class="stat-desc">6 筆日誌</div>
+          <div class="stat-rate">68%</div>
+          <div class="stat-desc">7 筆日誌</div>
         </div>
         <div class="stat-card card-empty">
           <div class="stat-name">陳信佳</div>
@@ -569,13 +526,13 @@
         </div>
         <div class="stat-card card-red">
           <div class="stat-name">賴柏羽</div>
-          <div class="stat-rate">28%</div>
-          <div class="stat-desc">8 筆日誌</div>
+          <div class="stat-rate">34%</div>
+          <div class="stat-desc">10 筆日誌</div>
         </div>
         <div class="stat-card card-yellow">
           <div class="stat-name">Chiehyi</div>
-          <div class="stat-rate">76%</div>
-          <div class="stat-desc">6 筆日誌</div>
+          <div class="stat-rate">78%</div>
+          <div class="stat-desc">8 筆日誌</div>
         </div>
       </div>
 
@@ -595,141 +552,9 @@
           <tbody>
                       <tr>
             <td>1</td>
-            <td><span class="member-tag member-chiehyi">Chiehyi</span></td>
-            <td>2026-05-28</td>
-            <td class="summary-cell">今日完成多項文件與報告處理，包含獎金分析、週追蹤報告及大豐環保策略分析等，但AI工具應用與數位轉型職能評分較低，顯示AI使用仍處於觀望期。</td>
-            <td>
-              <div class="progress-bar-wrap">
-                <div class="progress-bar-fill" style="width:82%;background:#28a745"></div>
-                <span class="progress-label">82%</span>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>2</td>
-            <td><span class="member-tag member-賴柏羽">賴柏羽</span></td>
-            <td>2026-05-28</td>
-            <td class="summary-cell">今日主要進行文件修改，無AI使用記錄。AI能力認證考核總分12/50，處於觀望期。</td>
-            <td>
-              <div class="progress-bar-wrap">
-                <div class="progress-bar-fill" style="width:24%;background:#dc3545"></div>
-                <span class="progress-label">24%</span>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>3</td>
-            <td><span class="member-tag member-賴柏羽">賴柏羽</span></td>
-            <td>2026-05-28</td>
-            <td class="summary-cell">今日主要進行文件修改，無AI使用記錄。AI能力認證考核總分為12/50，處於觀望期。</td>
-            <td>
-              <div class="progress-bar-wrap">
-                <div class="progress-bar-fill" style="width:24%;background:#dc3545"></div>
-                <span class="progress-label">24%</span>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>4</td>
-            <td><span class="member-tag member-bella">Bella</span></td>
-            <td>2026-05-27</td>
-            <td class="summary-cell">完成出勤異常通知排程修正、健保資料單一公司下載驗證、全興廠薪資結構調整試算、例假日加班模板建立及團保人數查核。</td>
-            <td>
-              <div class="progress-bar-wrap">
-                <div class="progress-bar-fill" style="width:85%;background:#28a745"></div>
-                <span class="progress-label">85%</span>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>5</td>
-            <td><span class="member-tag member-an">An</span></td>
-            <td>2026-05-27</td>
-            <td class="summary-cell">完成出勤總表自動化腳本升級、召募達成率報表更新、離職頁簽刷新、ATS API 權限整合及體檢報告對應確認，並產出工作日誌。</td>
-            <td>
-              <div class="progress-bar-wrap">
-                <div class="progress-bar-fill" style="width:85%;background:#28a745"></div>
-                <span class="progress-label">85%</span>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>6</td>
-            <td><span class="member-tag member-gloom">Gloom</span></td>
-            <td>2026-05-27</td>
-            <td class="summary-cell">今日主要完成職安相關的圖像生成、網站部署與功能調整，並進行自動情報收集的初步規劃。部分功能仍需持續優化與討論。</td>
-            <td>
-              <div class="progress-bar-wrap">
-                <div class="progress-bar-fill" style="width:75%;background:#28a745"></div>
-                <span class="progress-label">75%</span>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>7</td>
-            <td><span class="member-tag member-chiehyi">Chiehyi</span></td>
-            <td>2026-05-27</td>
-            <td class="summary-cell">今日完成獎金分析、Agents-人力變化及大豐環保策略分析等三項工作，並處理多份文件。AI 工具應用與數位轉型職能評分皆為觀望期。</td>
-            <td>
-              <div class="progress-bar-wrap">
-                <div class="progress-bar-fill" style="width:69%;background:#28a745"></div>
-                <span class="progress-label">69%</span>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>8</td>
-            <td><span class="member-tag member-an">An</span></td>
-            <td>2026-05-28</td>
-            <td class="summary-cell">完成新進人員體檢報告自動寄工安專案最終定版與排程設定，並進行招募管理系統本地開發環境建置，但伺服器重啟失敗待排查。</td>
-            <td>
-              <div class="progress-bar-wrap">
-                <div class="progress-bar-fill" style="width:75%;background:#28a745"></div>
-                <span class="progress-label">75%</span>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>9</td>
-            <td><span class="member-tag member-bella">Bella</span></td>
-            <td>2026-05-28</td>
-            <td class="summary-cell">今日完成出勤異常通知腳本維護、薪資結算比對腳本規劃與設計、全興廠薪資試算、企業內訓平台Git初始化及證照通知功能開發。</td>
-            <td>
-              <div class="progress-bar-wrap">
-                <div class="progress-bar-fill" style="width:75%;background:#28a745"></div>
-                <span class="progress-label">75%</span>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>10</td>
-            <td><span class="member-tag member-gloom">Gloom</span></td>
-            <td>2026-05-28</td>
-            <td class="summary-cell">今日主要完成職安相關文件製作、GitHub Pages更新與問題排除，並探索AI應用於職安領域的可能性。</td>
-            <td>
-              <div class="progress-bar-wrap">
-                <div class="progress-bar-fill" style="width:85%;background:#28a745"></div>
-                <span class="progress-label">85%</span>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>11</td>
-            <td><span class="member-tag member-chiehyi">Chiehyi</span></td>
-            <td>2026-05-29</td>
-            <td class="summary-cell">今日主要完成AI自動化腳本及週追蹤報告相關工作，並產出多份人資行政事務與其他工作事項文件。AI工具應用成熟度與數位轉型職能指標總評為31/50分。</td>
-            <td>
-              <div class="progress-bar-wrap">
-                <div class="progress-bar-fill" style="width:85%;background:#28a745"></div>
-                <span class="progress-label">85%</span>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>12</td>
             <td><span class="member-tag member-gloom">Gloom</span></td>
             <td>2026-06-03</td>
-            <td class="summary-cell">今日主要完成職安相關海報繪製、教材網頁化建議、新系統架構與文件修改，並進行多項AI工具應用與GitHub操作。</td>
+            <td class="summary-cell">完成灰塵怪獸海報繪製、教材網頁化建議、網頁模式調整與職業安全衛生計畫書系統架構。並設計職安Q版大頭貼，同時進行多項AI工具應用與本機文件修改。</td>
             <td>
               <div class="progress-bar-wrap">
                 <div class="progress-bar-fill" style="width:74%;background:#28a745"></div>
@@ -738,22 +563,22 @@
             </td>
           </tr>
           <tr>
-            <td>13</td>
+            <td>2</td>
             <td><span class="member-tag member-chiehyi">Chiehyi</span></td>
             <td>2026-06-03</td>
-            <td class="summary-cell">今日完成AI自動化腳本與週追蹤報告，並進行多項文件與程式碼修改，總體AI能力評分為初階使用者。</td>
+            <td class="summary-cell">完成 AI 自動化腳本 /create-agent 功能與建置介紹，並準備 GitHub Pages 部署。修改多份 HTML、Python 檔案及 Excel、Word 文件，產出 hr_tracker.py 等檔案。AI 能力評級為初階使用者。</td>
             <td>
               <div class="progress-bar-wrap">
-                <div class="progress-bar-fill" style="width:76%;background:#28a745"></div>
-                <span class="progress-label">76%</span>
+                <div class="progress-bar-fill" style="width:72%;background:#28a745"></div>
+                <span class="progress-label">72%</span>
               </div>
             </td>
           </tr>
           <tr>
-            <td>14</td>
+            <td>3</td>
             <td><span class="member-tag member-賴柏羽">賴柏羽</span></td>
             <td>2026-06-03</td>
-            <td class="summary-cell">今日主要處理法律文件修改與產出，並完成四項知識文件。AI 工具應用與數位轉型職能評分皆為初階使用者。</td>
+            <td class="summary-cell">今日主要處理多份合約文件，並產出標準條款檢查清單、法律術語對照表、高風險條款庫及修改意見範本等知識文件。AI 使用記錄為零，整體評級為初階使用者。</td>
             <td>
               <div class="progress-bar-wrap">
                 <div class="progress-bar-fill" style="width:38%;background:#dc3545"></div>
@@ -762,10 +587,22 @@
             </td>
           </tr>
           <tr>
-            <td>15</td>
+            <td>4</td>
             <td><span class="member-tag member-an">An</span></td>
             <td>2026-06-02</td>
-            <td class="summary-cell">已成功排除每日工作日誌排程「抓不到資料」的問題，並修正相關設定檔與腳本，待隔日驗證成果。</td>
+            <td class="summary-cell">已成功排除每日工作日誌自動排程「抓不到資料」的問題，修正寄送設定檔與多支外掛腳本，並建立每日自動寄送排程。後續需觀察自動報告是否正常帶入資料。</td>
+            <td>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width:66%;background:#28a745"></div>
+                <span class="progress-label">66%</span>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>5</td>
+            <td><span class="member-tag member-an">An</span></td>
+            <td>2026-06-02</td>
+            <td class="summary-cell">完成 ATS 系統 Bug 修復 prompt 撰寫與交付、新增「永續健康研究病理研究分析師」職缺篩選規則、下載 6/1 報到人員資料並更新入職任務檔、調整已報到下載排程為每月 27 號，並更新呂侑達資料。</td>
             <td>
               <div class="progress-bar-wrap">
                 <div class="progress-bar-fill" style="width:70%;background:#28a745"></div>
@@ -774,22 +611,10 @@
             </td>
           </tr>
           <tr>
-            <td>16</td>
-            <td><span class="member-tag member-an">An</span></td>
-            <td>2026-06-02</td>
-            <td class="summary-cell">完成ATS系統Bug修復prompt撰寫、履歷篩選新增職缺、已報到準員工資料下載與排程調整，並更新個別員工資料。</td>
-            <td>
-              <div class="progress-bar-wrap">
-                <div class="progress-bar-fill" style="width:85%;background:#28a745"></div>
-                <span class="progress-label">85%</span>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>17</td>
+            <td>6</td>
             <td><span class="member-tag member-bella">Bella</span></td>
             <td>2026-06-02</td>
-            <td class="summary-cell">本週完成多項薪資結算、加班費模組、勞資會議系統建置與日誌腳本維護，並處理多項薪資相關核對與計算。</td>
+            <td class="summary-cell">完成每月薪資結算流程中離職員工結算比對與加班費共用模組開發，擴充浮動薪資模板，並更新資遣試算與加班審核平台。同時，修復日誌腳本 bug，開發加班紀錄審核寄發腳本，並建置勞資會議系統基礎資料與議題整理。</td>
             <td>
               <div class="progress-bar-wrap">
                 <div class="progress-bar-fill" style="width:95%;background:#28a745"></div>
@@ -798,70 +623,22 @@
             </td>
           </tr>
           <tr>
-            <td>18</td>
+            <td>7</td>
             <td><span class="member-tag member-chiehyi">Chiehyi</span></td>
             <td>2026-06-02</td>
-            <td class="summary-cell">今日主要處理AI腳本儲存、週追蹤報告及Git密碼外洩問題，並進行多項文件修改與應用程式使用。AI能力評分為初階使用者。</td>
+            <td class="summary-cell">已完成 AI 自動化腳本儲檔、週追蹤報告 HTML basics 及 Git 歷史清理與網頁密碼鎖，並處理 Agents-人力變化相關問題。本機作業紀錄包含多份文件與程式碼修改及檔案產出。</td>
             <td>
               <div class="progress-bar-wrap">
-                <div class="progress-bar-fill" style="width:73%;background:#28a745"></div>
-                <span class="progress-label">73%</span>
+                <div class="progress-bar-fill" style="width:76%;background:#28a745"></div>
+                <span class="progress-label">76%</span>
               </div>
             </td>
           </tr>
           <tr>
-            <td>19</td>
+            <td>8</td>
             <td><span class="member-tag member-gloom">Gloom</span></td>
             <td>2026-06-02</td>
-            <td class="summary-cell">主要處理職安系統的contract與news功能問題，並針對高氣溫戶外作業熱危害預防計畫進行文件修改與簡報製作，同時進行GitHub操作與AI工具應用。</td>
-            <td>
-              <div class="progress-bar-wrap">
-                <div class="progress-bar-fill" style="width:68%;background:#28a745"></div>
-                <span class="progress-label">68%</span>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>20</td>
-            <td><span class="member-tag member-賴柏羽">賴柏羽</span></td>
-            <td>2026-06-02</td>
-            <td class="summary-cell">今日工作主要為文件修改與產出，但無AI使用記錄，AI能力認證考核總分為13/50，處於觀望期。</td>
-            <td>
-              <div class="progress-bar-wrap">
-                <div class="progress-bar-fill" style="width:26%;background:#dc3545"></div>
-                <span class="progress-label">26%</span>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>21</td>
-            <td><span class="member-tag member-bella">Bella</span></td>
-            <td>2026-06-01</td>
-            <td class="summary-cell">完成薪資結算流程、浮動薪資模板擴充、加班紀錄整理與合理性檢查，並規劃勞資會議系統及產出加班單代提模板，修復日誌 bug。</td>
-            <td>
-              <div class="progress-bar-wrap">
-                <div class="progress-bar-fill" style="width:90%;background:#28a745"></div>
-                <span class="progress-label">90%</span>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>22</td>
-            <td><span class="member-tag member-an">An</span></td>
-            <td>2026-06-01</td>
-            <td class="summary-cell">本週工作主要完成健康科技研發職缺文案制定、ATS Bug 修復需求整理、公司記事更新及AICenter職缺文案修訂。多項緊急任務待上線驗證。</td>
-            <td>
-              <div class="progress-bar-wrap">
-                <div class="progress-bar-fill" style="width:65%;background:#28a745"></div>
-                <span class="progress-label">65%</span>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>23</td>
-            <td><span class="member-tag member-gloom">Gloom</span></td>
-            <td>2026-06-01</td>
-            <td class="summary-cell">今日主要完成職安事故原因分析、十字路口俯視圖繪製、新聞自動抓取腳本更新與除錯，並進行AI工具應用與數位轉型職能評估。</td>
+            <td class="summary-cell">今日主要完成職安系統的contract系統多項功能調整，包含簽名欄位、工作區域選項、瀏覽器上一頁問題及新聞自動抓取規則。同時也處理了高氣溫戶外作業熱危害預防計畫的內容更新與簡報製作，並進行了相關的GitHub操作與檔案修改。</td>
             <td>
               <div class="progress-bar-wrap">
                 <div class="progress-bar-fill" style="width:70%;background:#28a745"></div>
@@ -870,70 +647,250 @@
             </td>
           </tr>
           <tr>
-            <td>24</td>
-            <td><span class="member-tag member-chiehyi">Chiehyi</span></td>
-            <td>2026-06-01</td>
-            <td class="summary-cell">今日主要完成14064 AI自動化腳本相關工作，AI使用費用為0。AI能力認證考核總分為12/50，處於觀望期。</td>
+            <td>9</td>
+            <td><span class="member-tag member-賴柏羽">賴柏羽</span></td>
+            <td>2026-06-02</td>
+            <td class="summary-cell">今日主要完成三份文件修改，並產出一個 PDF 檔案。AI 使用記錄為零，整體 AI 能力認證考核為觀望期，建議嘗試將重複性工作交由 AI 處理。</td>
             <td>
               <div class="progress-bar-wrap">
-                <div class="progress-bar-fill" style="width:71%;background:#28a745"></div>
-                <span class="progress-label">71%</span>
+                <div class="progress-bar-fill" style="width:26%;background:#dc3545"></div>
+                <span class="progress-label">26%</span>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>10</td>
+            <td><span class="member-tag member-bella">Bella</span></td>
+            <td>2026-06-01</td>
+            <td class="summary-cell">完成離職員工薪資結算比對模組與加班費共用模組開發，擴充浮動薪資模板並新增強制扣款分頁。整理 HRM 加班紀錄並加入合理性檢查邏輯。更新資遣試算文件，規劃勞資會議系統建置，並產出加班單代提模板。修復 daily-work-log skill bug。</td>
+            <td>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width:95%;background:#28a745"></div>
+                <span class="progress-label">95%</span>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>11</td>
+            <td><span class="member-tag member-an">An</span></td>
+            <td>2026-06-01</td>
+            <td class="summary-cell">已完成健康科技研發新事業體職缺文案制定與 104 職類確認，並整理 ATS 文件繳交狀態 Bug 修復需求單。同時更新公司記事 5 項品牌重點，並修訂 AICenter 職缺刊登文案簡述。</td>
+            <td>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width:70%;background:#28a745"></div>
+                <span class="progress-label">70%</span>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>12</td>
+            <td><span class="member-tag member-gloom">Gloom</span></td>
+            <td>2026-06-01</td>
+            <td class="summary-cell">今日主要完成職安相關的職災原因分析、十字路口俯視圖繪製與調整，並處理新聞自動更新腳本的除錯與推送。同時，也進行了GitHub Pages與Git相關操作，並初步檢視了Gemini API KEY。</td>
+            <td>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width:70%;background:#28a745"></div>
+                <span class="progress-label">70%</span>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>13</td>
+            <td><span class="member-tag member-chiehyi">Chiehyi</span></td>
+            <td>2026-06-01</td>
+            <td class="summary-cell">今日完成 14064 AI 自動化腳本相關工作，並進行 AI 能力認證考核，目前處於觀望期。</td>
+            <td>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width:78%;background:#28a745"></div>
+                <span class="progress-label">78%</span>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>14</td>
+            <td><span class="member-tag member-賴柏羽">賴柏羽</span></td>
+            <td>2026-06-01</td>
+            <td class="summary-cell">今日無 AI 使用記錄，AI 能力認證考核總評為觀望期，建議每天嘗試將重複小事交給 AI 處理。</td>
+            <td>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width:24%;background:#dc3545"></div>
+                <span class="progress-label">24%</span>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>15</td>
+            <td><span class="member-tag member-賴柏羽">賴柏羽</span></td>
+            <td>2026-06-01</td>
+            <td class="summary-cell">今日無 AI 使用記錄，AI 能力認證考核總評為觀望期，建議每天嘗試將重複小事交給 AI 處理。</td>
+            <td>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width:24%;background:#dc3545"></div>
+                <span class="progress-label">24%</span>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>16</td>
+            <td><span class="member-tag member-賴柏羽">賴柏羽</span></td>
+            <td>2026-06-01</td>
+            <td class="summary-cell">今日無 AI 使用記錄，AI 能力認證考核總評為觀望期，建議每天嘗試將重複小事交給 AI 處理。</td>
+            <td>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width:24%;background:#dc3545"></div>
+                <span class="progress-label">24%</span>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>17</td>
+            <td><span class="member-tag member-chiehyi">Chiehyi</span></td>
+            <td>2026-06-05</td>
+            <td class="summary-cell">今日完成BPM自動化流程問題討論、HR工作日誌報告系統更新、週追蹤報告、skills及策略營相關工作。並修改多份文件與程式碼，產出hr_tracker_template.html、combined_template.html、generate_report.py及在職人員名單.xlsx。</td>
+            <td>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width:73%;background:#28a745"></div>
+                <span class="progress-label">73%</span>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>18</td>
+            <td><span class="member-tag member-賴柏羽">賴柏羽</span></td>
+            <td>2026-06-05</td>
+            <td class="summary-cell">今日主要完成多份合約與廢棄物處理相關文件的修改與審核，並產出多個自動化腳本及知識管理文件，展現中階使用者能力。</td>
+            <td>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width:64%;background:#28a745"></div>
+                <span class="progress-label">64%</span>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>19</td>
+            <td><span class="member-tag member-an">An</span></td>
+            <td>2026-06-04</td>
+            <td class="summary-cell">完成 Q2 勞資會議文件最終修正，並規劃 HRM 在職/離職人員清單動態網頁、重構 ATS 準員工資料缺漏提醒信件版，以及升級 KM 準員工資料下載的合併保護模式。</td>
+            <td>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width:75%;background:#28a745"></div>
+                <span class="progress-label">75%</span>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>20</td>
+            <td><span class="member-tag member-bella">Bella</span></td>
+            <td>2026-06-04</td>
+            <td class="summary-cell">完成勞資會議議題建置、全興廠三休二班表試算與腳本開發、薪資報表加密寄送腳本開發（業務部測試）、全興廠薪資結構調整腳本與加班費試算驗證、蔡孟樺薪資明細產出、職福金補助名冊自動產生，並確認月薪彙整寄發腳本功能。</td>
+            <td>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width:75%;background:#28a745"></div>
+                <span class="progress-label">75%</span>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>21</td>
+            <td><span class="member-tag member-chiehyi">Chiehyi</span></td>
+            <td>2026-06-04</td>
+            <td class="summary-cell">完成週追蹤報告相關工作，調整報告產出時間，並新增每月員工人數統計任務。產出多份人資行政事務與其他工作事項相關檔案，AI 能力認證為中階使用者。</td>
+            <td>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width:79%;background:#28a745"></div>
+                <span class="progress-label">79%</span>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>22</td>
+            <td><span class="member-tag member-an">An</span></td>
+            <td>2026-06-04</td>
+            <td class="summary-cell">今日主要完成多份文件與程式碼的修改，共計 27 筆，涵蓋廢清書、變更申請表、清除能力計算方式、清除許可證等相關文件處理。</td>
+            <td>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width:85%;background:#28a745"></div>
+                <span class="progress-label">85%</span>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>23</td>
+            <td><span class="member-tag member-gloom">Gloom</span></td>
+            <td>2026-06-04</td>
+            <td class="summary-cell">完成職安橫式宣導海報製作，並將PPTX簡報轉換為HTML格式，同時處理簡報滿版、畫質及影片嵌入問題。此外，也進行了NotebookLM與Gemini相關的瀏覽器AI工作。</td>
+            <td>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width:74%;background:#28a745"></div>
+                <span class="progress-label">74%</span>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>24</td>
+            <td><span class="member-tag member-賴柏羽">賴柏羽</span></td>
+            <td>2026-06-04</td>
+            <td class="summary-cell">今日主要完成兩份合約文件的修改，並無AI工具使用記錄。AI能力認證考核結果為觀望期，建議嘗試將重複性工作交由AI處理。</td>
+            <td>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width:20%;background:#dc3545"></div>
+                <span class="progress-label">20%</span>
               </div>
             </td>
           </tr>
           <tr>
             <td>25</td>
-            <td><span class="member-tag member-賴柏羽">賴柏羽</span></td>
-            <td>2026-06-01</td>
-            <td class="summary-cell">今日無AI使用記錄，AI能力認證考核總分為12/50，處於觀望期，建議嘗試將重複工作交給AI。</td>
+            <td><span class="member-tag member-an">An</span></td>
+            <td>2026-06-03</td>
+            <td class="summary-cell">今日主要處理多份文件，包含再利用檢核、廢棄物紀錄、汙染流向、廢清書退件公文及自衛消防編組訓練成果等，共修改或新增 25 筆檔案。</td>
             <td>
               <div class="progress-bar-wrap">
-                <div class="progress-bar-fill" style="width:24%;background:#dc3545"></div>
-                <span class="progress-label">24%</span>
+                <div class="progress-bar-fill" style="width:90%;background:#28a745"></div>
+                <span class="progress-label">90%</span>
               </div>
             </td>
           </tr>
           <tr>
             <td>26</td>
-            <td><span class="member-tag member-賴柏羽">賴柏羽</span></td>
-            <td>2026-06-01</td>
-            <td class="summary-cell">今日無AI使用記錄，AI能力認證考核總分12/50，處於觀望期，建議嘗試將重複小事交給AI。</td>
+            <td><span class="member-tag member-an">An</span></td>
+            <td>2026-06-03</td>
+            <td class="summary-cell">人員增補主檔從 v0 設計到 v2，完成 183 筆職缺、96 筆離職、59 筆到職的串接配對與流失率分析。2026 Q2 勞資會議文件全數產出，包含 15 份簽到簿與 4 份會議紀錄。招募平台準員工資料下載與 Replit ATS PDF 條件驗證持續進行，並更新清水大貨車司機履歷篩選規則。</td>
             <td>
               <div class="progress-bar-wrap">
-                <div class="progress-bar-fill" style="width:24%;background:#dc3545"></div>
-                <span class="progress-label">24%</span>
+                <div class="progress-bar-fill" style="width:75%;background:#28a745"></div>
+                <span class="progress-label">75%</span>
               </div>
             </td>
           </tr>
           <tr>
             <td>27</td>
-            <td><span class="member-tag member-賴柏羽">賴柏羽</span></td>
-            <td>2026-06-01</td>
-            <td class="summary-cell">今日無AI使用記錄，AI能力認證考核總分12/50，處於觀望期，建議嘗試將重複工作交由AI處理。</td>
+            <td><span class="member-tag member-bella">Bella</span></td>
+            <td>2026-06-03</td>
+            <td class="summary-cell">完成每日出勤異常通知腳本修復與排程新增，HRM新人建檔RPA第一階段框架開發，115年5月薪資核對總報告與ERP費用單彙整腳本，以及全興廠11位員工薪資結構調整試算報告。</td>
             <td>
               <div class="progress-bar-wrap">
-                <div class="progress-bar-fill" style="width:24%;background:#dc3545"></div>
-                <span class="progress-label">24%</span>
+                <div class="progress-bar-fill" style="width:85%;background:#28a745"></div>
+                <span class="progress-label">85%</span>
               </div>
             </td>
           </tr>
           <tr>
             <td>28</td>
-            <td><span class="member-tag member-賴柏羽">賴柏羽</span></td>
-            <td>2026-05-29</td>
-            <td class="summary-cell">今日無AI使用記錄，主要進行文件與程式碼修改，並產出app.py及index.html。AI能力認證總分18/50，為初階使用者。</td>
+            <td><span class="member-tag member-an">An</span></td>
+            <td>2026-06-03</td>
+            <td class="summary-cell">今日主要完成多份文件修改與整理，包含再利用檢核文件、廢棄物紀錄表、廢清書相關公文及審查意見等，共計修改 26 筆檔案。</td>
             <td>
               <div class="progress-bar-wrap">
-                <div class="progress-bar-fill" style="width:36%;background:#dc3545"></div>
-                <span class="progress-label">36%</span>
+                <div class="progress-bar-fill" style="width:90%;background:#28a745"></div>
+                <span class="progress-label">90%</span>
               </div>
             </td>
           </tr>
           <tr>
             <td>29</td>
             <td><span class="member-tag member-bella">Bella</span></td>
-            <td>2026-05-29</td>
-            <td class="summary-cell">完成浮動薪資模板、作業獎金、電商類加盟獎金腳本開發，並規劃離職員工比對與加班費模組，同時微調新進員工腳本及彙整免稅加班費報表。</td>
+            <td>2026-06-05</td>
+            <td class="summary-cell">完成全興廠薪資結構調整，修正薪資顯示邏輯並驗證個案；產出三休二排班規劃 HTML 報告，解析政府與公司行事曆；並將端午禮金發放名單篩選流程腳本化。</td>
             <td>
               <div class="progress-bar-wrap">
                 <div class="progress-bar-fill" style="width:90%;background:#28a745"></div>
@@ -944,8 +901,80 @@
           <tr>
             <td>30</td>
             <td><span class="member-tag member-an">An</span></td>
-            <td>2026-05-29</td>
-            <td class="summary-cell">完成退保與新進勞健保團保資料分發、AICenter 104 職缺盤點、履歷篩選規則新增及工作日誌產出。</td>
+            <td>2026-06-05</td>
+            <td class="summary-cell">HR Dashboard 整合招募效益與 HRM 在/離職資料，但因路線衝突需重做。ATS 準員工資料缺漏提醒功能切換資料源至 ATS API，並修正兩次抓錯。招募效益資料持續對焦數值換算。HRM 自動匯出方案探索中。</td>
+            <td>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width:55%;background:#dc3545"></div>
+                <span class="progress-label">55%</span>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>31</td>
+            <td><span class="member-tag member-an">An</span></td>
+            <td>2026-06-05</td>
+            <td class="summary-cell">今日主要完成多份文件與程式碼的修改，包含多個PDF、DOCX與XLSX檔案，並進行了AI工具的單次會話使用。</td>
+            <td>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width:100%;background:#28a745"></div>
+                <span class="progress-label">100%</span>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>32</td>
+            <td><span class="member-tag member-chiehyi">Chiehyi</span></td>
+            <td>2026-06-09</td>
+            <td class="summary-cell">完成人力效益指標相關工作，並對焦員工人數下載流程，確認「員工資料轉出」功能不需使用，同時產出多份報表與程式碼。AI能力認證考核等級為中階使用者。</td>
+            <td>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width:78%;background:#28a745"></div>
+                <span class="progress-label">78%</span>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>33</td>
+            <td><span class="member-tag member-賴柏羽">賴柏羽</span></td>
+            <td>2026-06-09</td>
+            <td class="summary-cell">今日主要處理多份契約相關文件，包含審查報告、終止協議書、轉租協議書及切結書，並產出多項檔案。AI 工具無使用記錄，目前為初階使用者。</td>
+            <td>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width:48%;background:#dc3545"></div>
+                <span class="progress-label">48%</span>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>34</td>
+            <td><span class="member-tag member-an">An</span></td>
+            <td>2026-06-08</td>
+            <td class="summary-cell">完成大豐環保許可證管理系統的 FastAPI 移植與功能更新，並維護承攬商環安自動化系統及補寄歷史日報。同時處理多項環保申報與許可文件，包含環氧公司申報與麥箖企業變更送件。</td>
+            <td>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width:90%;background:#28a745"></div>
+                <span class="progress-label">90%</span>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>35</td>
+            <td><span class="member-tag member-bella">Bella</span></td>
+            <td>2026-06-08</td>
+            <td class="summary-cell">完成勞資會議系統操作手冊初稿、優化每日工作報告腳本、產出加班審核平台5月優化成果報告、釐清企業內訓平台服務範圍、篩選端午禮金發放名單、自動化端午禮金所得稅繳款書產製，並將禮金腳本整合至薪資結算流程，以及完成全興廠三休二排班規劃。</td>
+            <td>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width:100%;background:#28a745"></div>
+                <span class="progress-label">100%</span>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>36</td>
+            <td><span class="member-tag member-an">An</span></td>
+            <td>2026-06-08</td>
+            <td class="summary-cell">完成 HR Dashboard 資料管線維護與校正，修正新進人員健檢報告寄送問題，並新增履歷自動篩選主管通知方式。同時，整理 FB 五股區職缺刊登問卷，更新 Replit 招募管理系統進度，並規劃內部員工 LINE@ 觸發機制。</td>
             <td>
               <div class="progress-bar-wrap">
                 <div class="progress-bar-fill" style="width:75%;background:#28a745"></div>
@@ -954,14 +983,122 @@
             </td>
           </tr>
           <tr>
-            <td>31</td>
-            <td><span class="member-tag member-gloom">Gloom</span></td>
-            <td>2026-05-29</td>
-            <td class="summary-cell">今日工作主要完成職安相關文件比較、風險評估報告、自動檢查清單彙整，並優化網站功能及處理員工體檢資料。AI 工具應用與數位轉型職能仍有進步空間。</td>
+            <td>37</td>
+            <td><span class="member-tag member-賴柏羽">賴柏羽</span></td>
+            <td>2026-06-08</td>
+            <td class="summary-cell">今日無 AI 使用記錄，AI 能力認證考核總評為觀望期，建議每天嘗試將重複小事交給 AI 處理。</td>
             <td>
               <div class="progress-bar-wrap">
-                <div class="progress-bar-fill" style="width:62%;background:#28a745"></div>
-                <span class="progress-label">62%</span>
+                <div class="progress-bar-fill" style="width:24%;background:#dc3545"></div>
+                <span class="progress-label">24%</span>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>38</td>
+            <td><span class="member-tag member-gloom">Gloom</span></td>
+            <td>2026-06-08</td>
+            <td class="summary-cell">今日主要完成公務車使用申請單和每日檢點表以及五股反應事項的修改。AI 工具應用與數位轉型職能方面，目前處於觀望期，尚無 AI 使用記錄。</td>
+            <td>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width:24%;background:#dc3545"></div>
+                <span class="progress-label">24%</span>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>39</td>
+            <td><span class="member-tag member-chiehyi">Chiehyi</span></td>
+            <td>2026-06-08</td>
+            <td class="summary-cell">今日無 AI 使用記錄，AI 能力認證考核總評為觀望期，建議每天嘗試將重複小事交給 AI 處理。</td>
+            <td>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width:84%;background:#28a745"></div>
+                <span class="progress-label">84%</span>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>40</td>
+            <td><span class="member-tag member-gloom">Gloom</span></td>
+            <td>2026-06-05</td>
+            <td class="summary-cell">已完成職災原因分析、生成職安示意圖、審視Portal入口頁系統按鈕顏色與橫欄一致性，並針對職場霸凌防治準則草案進行重點整理與計畫書初版撰寫。</td>
+            <td>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width:100%;background:#28a745"></div>
+                <span class="progress-label">100%</span>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>41</td>
+            <td><span class="member-tag member-an">An</span></td>
+            <td>2026-06-09</td>
+            <td class="summary-cell">完成新進人員健檢報告自動寄送工安的附件壓縮與加密，並修正寄送邏輯。HR Dashboard 整合招募效益資料，包含 104/1111/FB 資料接入與核對，並更名為 Recruit Dashboard。製作電話邀約 SOP PPT，調整 ATS 準員工資料下載排程與缺漏檢查。</td>
+            <td>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width:95%;background:#28a745"></div>
+                <span class="progress-label">95%</span>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>42</td>
+            <td><span class="member-tag member-bella">Bella</span></td>
+            <td>2026-06-09</td>
+            <td class="summary-cell">完成端午節金所得稅繳款書自動化腳本驗證與寄送草稿，修正每日工作報告自動寄送系統，並盤點團保報價資料與建立預繳費用試算腳本，富邦要保書名冊整理腳本邏輯確認並更新資料。</td>
+            <td>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width:90%;background:#28a745"></div>
+                <span class="progress-label">90%</span>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>43</td>
+            <td><span class="member-tag member-an">An</span></td>
+            <td>2026-06-09</td>
+            <td class="summary-cell">完成大豐環保許可證管理系統的法規鑑別與 AI 助理中心移植至 FastAPI，並支援 API 金鑰環境變數。驗證新路由功能正常，並確保機敏資訊未外洩。自動化產生並寄送上週五工作日誌。</td>
+            <td>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width:100%;background:#28a745"></div>
+                <span class="progress-label">100%</span>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>44</td>
+            <td><span class="member-tag member-gloom">Gloom</span></td>
+            <td>2026-06-09</td>
+            <td class="summary-cell">完成職場霸凌提案撰寫，並開發職護臨場服務系統，包含瀏覽名單與新增人員功能，同時更新教育訓練教材，並透過 GitHub Pages 發布共享。</td>
+            <td>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width:65%;background:#28a745"></div>
+                <span class="progress-label">65%</span>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>45</td>
+            <td><span class="member-tag member-chiehyi">Chiehyi</span></td>
+            <td>2026-06-10</td>
+            <td class="summary-cell">已完成月報告相關工作，並產出人資部週追蹤報告及多個程式碼檔案。AI 工具應用成熟度為中階使用者，數位轉型職能指標仍有提升空間。</td>
+            <td>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width:82%;background:#28a745"></div>
+                <span class="progress-label">82%</span>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>46</td>
+            <td><span class="member-tag member-賴柏羽">賴柏羽</span></td>
+            <td>2026-06-10</td>
+            <td class="summary-cell">今日主要完成契約審查報告及矽晶圓循環PVC地板合作合約的審查意見與修正稿，並產出相關程式碼與文件，AI能力評級為初階使用者。</td>
+            <td>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar-fill" style="width:52%;background:#dc3545"></div>
+                <span class="progress-label">52%</span>
               </div>
             </td>
           </tr>
@@ -980,10 +1117,10 @@
       </div>
 
       <!-- 團隊概覽 -->
-      <p class="section-title">團隊本週概覽 <span class="week-range-note">2026/05/27（三） ~ 2026/06/02（二）</span></p>
+      <p class="section-title">團隊本週概覽 <span class="week-range-note">2026/06/01（一） ~ 2026/06/07（日）</span></p>
       <div class="overview-row">
         <div class="overview-card big">
-          <div class="num" style="color:#28a745">67%</div>
+          <div class="num" style="color:#28a745">70%</div>
           <div class="lbl">團隊週平均達成率</div>
         </div>
         <div class="overview-card ov-green">
@@ -1001,7 +1138,7 @@
       </div>
 
       <!-- 成員週報摘要 -->
-      <p class="section-title">成員週報摘要（共 6 人）<span class="week-range-note">2026/05/27（三） ~ 2026/06/02（二）</span></p>
+      <p class="section-title">成員週報摘要（共 6 人）<span class="week-range-note">2026/06/01（一） ~ 2026/06/07（日）</span></p>
       <div class="cards-grid">
               <div class="member-card rag-green">
         <div class="card-header">
@@ -1009,21 +1146,21 @@
           <span class="rag-pill" style="background:#28a745">🟢 達成</span>
         </div>
         <div class="rate-row">
-          <div class="rate-num" style="color:#28a745">87%</div>
+          <div class="rate-num" style="color:#28a745">88%</div>
           <div class="rate-meta">
             <div class="rate-label">週平均達成率</div>
             <div class="rate-days">5 天日誌</div>
           </div>
         </div>
         <div class="progress-track">
-          <div class="progress-fill" style="width:87%;background:#28a745"></div>
+          <div class="progress-fill" style="width:88%;background:#28a745"></div>
         </div>
         <div class="divider"></div>
         <div class="bullets-label">📌 本週核心工作</div>
         <ul class="bullet-list">
-        <li>完成薪資結算自動化模組開發，包含離職員工結算比對與加班費共用模組，並擴充浮動薪資模板。</li>
-        <li>推進勞資會議系統建置，完成公司與勞資代表資料匯入框架，並整理歷屆議題以供系統上線。</li>
-        <li>持續維護與優化每日出勤異常通知自動化腳本，確保排程正常運作並修復日誌錯誤。</li>
+        <li>完成每月薪資結算流程優化，包含離職員工結算比對與加班費共用模組開發，並擴充浮動薪資模板功能。</li>
+        <li>推進勞資會議系統建置，完成公司與代表資料匯入規劃，並整理歷屆議題以準備系統上線。</li>
+        <li>修復每日工作日誌腳本 bug，確保日誌內容正確性，並自動化每日出勤異常通知發送。</li>
         </ul>
       </div>
       <div class="member-card rag-green">
@@ -1032,21 +1169,21 @@
           <span class="rag-pill" style="background:#28a745">🟢 達成</span>
         </div>
         <div class="rate-row">
-          <div class="rate-num" style="color:#28a745">76%</div>
+          <div class="rate-num" style="color:#28a745">78%</div>
           <div class="rate-meta">
             <div class="rate-label">週平均達成率</div>
-            <div class="rate-days">6 天日誌</div>
+            <div class="rate-days">10 天日誌</div>
           </div>
         </div>
         <div class="progress-track">
-          <div class="progress-fill" style="width:76%;background:#28a745"></div>
+          <div class="progress-fill" style="width:78%;background:#28a745"></div>
         </div>
         <div class="divider"></div>
         <div class="bullets-label">📌 本週核心工作</div>
         <ul class="bullet-list">
-        <li>完成新進人員體檢報告自動寄送工安專案的最終定版，並將腳本納入 Windows 排程，預計於 6/5 首次自動執行。</li>
-        <li>成功建置招募管理系統的 VScode 本地開發環境，包含 Replit 資料匯入 PostgreSQL 及前後端伺服器啟動與環境變數設定。</li>
-        <li>排除每日工作日誌自動排程「抓不到資料」的問題，修正設定檔與掃描腳本，確保排程能正確產出報告。</li>
+        <li>優化自動化報告排程，修復工作日誌抓取資料問題，並建立每日自動寄送機制。</li>
+        <li>處理 ATS 系統 Bug，修復準員工文件繳交狀態未自動更新問題，並新增履歷篩選職缺規則。</li>
+        <li>制定新事業體職缺文案並更新公司品牌記事，同時持續維護招募與人資系統。</li>
         </ul>
       </div>
       <div class="member-card rag-green">
@@ -1055,21 +1192,21 @@
           <span class="rag-pill" style="background:#28a745">🟢 達成</span>
         </div>
         <div class="rate-row">
-          <div class="rate-num" style="color:#28a745">72%</div>
+          <div class="rate-num" style="color:#28a745">78%</div>
           <div class="rate-meta">
             <div class="rate-label">週平均達成率</div>
             <div class="rate-days">5 天日誌</div>
           </div>
         </div>
         <div class="progress-track">
-          <div class="progress-fill" style="width:72%;background:#28a745"></div>
+          <div class="progress-fill" style="width:78%;background:#28a745"></div>
         </div>
         <div class="divider"></div>
         <div class="bullets-label">📌 本週核心工作</div>
         <ul class="bullet-list">
-        <li>持續優化職安管理系統，包含承攬商系統介面、法規鑑別功能與職災分析模組，提升使用者體驗及資料整合性。</li>
-        <li>運用 AI 工具生成職安宣導素材，如道安漫畫與電器使用標語海報，並探索 AI 影像辨識風險的應用潛力。</li>
-        <li>積極進行 GitHub Pages 部署與版本控制，確保系統更新與資料同步，並解決部署過程中遇到的技術問題。</li>
+        <li>優化職安系統功能，包含簽名流程、下拉選單及錯誤修正，提升使用者體驗。</li>
+        <li>建立並維護職業安全衛生計畫書系統，將計畫書轉存為HTML格式並發布。</li>
+        <li>運用AI工具繪製宣導海報及設計Q版大頭貼，並將教材網頁化以利外部使用。</li>
         </ul>
       </div>
       <div class="member-card rag-none">
@@ -1085,21 +1222,21 @@
           <span class="rag-pill" style="background:#dc3545">🔴 待改善</span>
         </div>
         <div class="rate-row">
-          <div class="rate-num" style="color:#dc3545">26%</div>
+          <div class="rate-num" style="color:#dc3545">31%</div>
           <div class="rate-meta">
             <div class="rate-label">週平均達成率</div>
             <div class="rate-days">7 天日誌</div>
           </div>
         </div>
         <div class="progress-track">
-          <div class="progress-fill" style="width:26%;background:#dc3545"></div>
+          <div class="progress-fill" style="width:31%;background:#dc3545"></div>
         </div>
         <div class="divider"></div>
         <div class="bullets-label">📌 本週核心工作</div>
         <ul class="bullet-list">
-        <li>持續修改環管署補充意見文件，確保內容完善。</li>
-        <li>處理顧問合約相關文件，並探索法律產業AI應用。</li>
-        <li>AI能力認證考核分數維持觀望期，需加強AI工具應用。</li>
+        <li>積極處理多份合約與法律文件，包含NDA、諮詢合約及廢棄物處理契約等。</li>
+        <li>建立並完善多項知識管理文件，如標準條款、法律術語、高風險條款庫及公文格式規範。</li>
+        <li>持續提升數位轉型能力，產出契約審查報告並嘗試開發自動化腳本以優化工作流程。</li>
         </ul>
       </div>
       <div class="member-card rag-green">
@@ -1120,9 +1257,9 @@
         <div class="divider"></div>
         <div class="bullets-label">📌 本週核心工作</div>
         <ul class="bullet-list">
-        <li>持續優化週追蹤報告的自動化生成流程，並嘗試整合日報與週報。</li>
-        <li>積極學習 HTML 基礎知識與 Git 操作，以提升網頁報告的部署與管理能力。</li>
-        <li>處理 GitHub 部署相關的密碼安全問題，確保程式碼上傳的安全性。</li>
+        <li>持續開發與優化 AI 自動化腳本，特別是 /create-agent 功能，並處理 GitHub Pages 部署相關問題。</li>
+        <li>積極處理週追蹤報告的相關工作，包含 HTML 基礎知識、Git 歷史清理及網頁密碼鎖定。</li>
+        <li>參與 BPM 自動化流程問題討論，並處理多項人資行政事務與文件更新。</li>
         </ul>
       </div>
       </div>
@@ -1134,18 +1271,17 @@
 
       <!-- 匯出按鈕 -->
       <div class="export-bar">
-        <a class="export-btn" href="data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,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" download="人資部週追蹤報告(0527~0602).xlsx">&#128229; 匯出本週 Excel 報告</a>
+        <a class="export-btn" href="data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,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" download="人資部週追蹤報告(0601~0607).xlsx">&#128229; 匯出本週 Excel 報告</a>
         <button class="html-btn" onclick="downloadHTML()">&#128190; 下載 HTML 報告</button>
-        <button class="export-corrections-btn" onclick="exportCorrections()">📋 匯出修正清單 JSON</button>
       </div>
 
       <!-- 摘要統計列 -->
-      <p class="section-title">項目追蹤概況 <span class="week-range-note">2026/05/27（三） ~ 2026/06/02（二）</span></p>
+      <p class="section-title">項目追蹤概況 <span class="week-range-note">2026/06/01（一） ~ 2026/06/07（日）</span></p>
       <div class="tracker-stats-bar">
         <div class="tracker-chip tc-total"><span class="tc-num">13</span> 追蹤項目</div>
         <div class="tracker-chip tc-done"><span class="tc-num">2</span> ✅ 已完成</div>
-        <div class="tracker-chip tc-green"><span class="tc-num">5</span> 🟢 正常推進</div>
-        <div class="tracker-chip tc-yellow"><span class="tc-num">4</span> 🟡 待改善</div>
+        <div class="tracker-chip tc-green"><span class="tc-num">4</span> 🟢 正常推進</div>
+        <div class="tracker-chip tc-yellow"><span class="tc-num">5</span> 🟡 待改善</div>
         <div class="tracker-chip tc-red"><span class="tc-num">0</span> 🔴 卡關</div>
         <div class="tracker-chip tc-none"><span class="tc-num">2</span> ⚪ 本週無資料</div>
       </div>
@@ -1173,7 +1309,6 @@
             <col style="width:90px">
             <col style="width:105px">
             <col style="width:150px">
-            <col class="col-action">
           </colgroup>
           <thead>
             <tr>
@@ -1186,7 +1321,6 @@
               <th>預計完成日</th>
               <th>RAG</th>
               <th>卡關／需求</th>
-              <th>操作</th>
             </tr>
           </thead>
           <tbody>
@@ -1195,7 +1329,7 @@
   <td>HR人力4->2名</td>
   <td class="goal-cell">每月人力效益報表(已完成，持續優化)</td>
   <td class="owner-cell">婕誼</td>
-  <td class="result-cell">本週日誌中未明確提及「每月人力效益報表」的具體進度，但有進行獎金分析相關工作，可能與此報表優化間接相關。</td>
+  <td class="result-cell">本週日誌未明確提及「每月人力效益報表」的具體進度，但有處理多份與人力相關的Excel文件，可能與此報表優化有關。例如：專案拓展部專案計畫人員清冊、在職人員名單等。</td>
   <td class="rate-cell"><div class="rate-wrap"><div class="rate-bar" style="width:100%;background:#1a8c6e"></div><input class="rate-input" type="number" min="0" max="100" value="100" oninput="updateRate(this)"></div></td>
   <td class="deadline-cell">2026/03/31</td>
   <td class="rag-cell"><span class="rag-badge" style="background:#1a8c6e">✅ 已完成</span></td>
@@ -1207,7 +1341,7 @@
   <td>HR人力4->2名</td>
   <td class="goal-cell">人力變化報表(已完成，持續優化)</td>
   <td class="owner-cell">婕誼</td>
-  <td class="result-cell">本週日誌中提及「Agents-人力變化」相關工作，顯示持續對人力變化報表進行處理與優化，並討論了GitHub部署與密碼安全問題。</td>
+  <td class="result-cell">本週日誌未明確提及「人力變化報表」的具體進度，但有處理多份與人力相關的Excel文件，可能與此報表優化有關。例如：專案拓展部專案計畫人員清冊、在職人員名單等。</td>
   <td class="rate-cell"><div class="rate-wrap"><div class="rate-bar" style="width:100%;background:#1a8c6e"></div><input class="rate-input" type="number" min="0" max="100" value="100" oninput="updateRate(this)"></div></td>
   <td class="deadline-cell">2026/03/31</td>
   <td class="rag-cell"><span class="rag-badge" style="background:#1a8c6e">✅ 已完成</span></td>
@@ -1219,7 +1353,7 @@
   <td>HR人力4->2名</td>
   <td class="goal-cell">薪資調整變化</td>
   <td class="owner-cell">婕誼</td>
-  <td class="result-cell">本週日誌中未明確提及「薪資調整變化」的具體進度，但有處理多份獎金管理準則與季度業績佣金制度文件，可能為相關前置作業。</td>
+  <td class="result-cell">本週無實質進度。</td>
   <td class="rate-cell"><div class="rate-wrap"><div class="rate-bar" style="width:0%;background:#dc3545"></div><input class="rate-input" type="number" min="0" max="100" value="0" oninput="updateRate(this)"></div></td>
   <td class="deadline-cell">2026/06/30</td>
   <td class="rag-cell"><span class="rag-badge" style="background:#e6a800">🟡 待改善</span></td>
@@ -1239,16 +1373,16 @@
   <td class="action-cell"><button class="edit-btn" onclick="startEdit(this)">✏️ 編輯</button></td>
 </tr>
 
-<tr class="row-yellow" data-row-key="ac879d7916" data-rag="待改善" data-rate="0">
+<tr class="row-yellow" data-row-key="ac879d7916" data-rag="待改善" data-rate="10">
   <td class="cat-cell" rowspan="2"><span class="cat-label">人資作業自動化</span></td>
   <td>HR人力4->2名</td>
   <td class="goal-cell">新進人員加保、退保自動化</td>
   <td class="owner-cell">詩紜</td>
-  <td class="result-cell">勞保加退保 RPA 程式與 batch 已備，但長期無 log 紀錄，待上線驗證。</td>
-  <td class="rate-cell"><div class="rate-wrap"><div class="rate-bar" style="width:0%;background:#dc3545"></div><input class="rate-input" type="number" min="0" max="100" value="0" oninput="updateRate(this)"></div></td>
+  <td class="result-cell">勞保加退保 RPA 程式與 batch 已備，但長期無 log 待上線驗證。退保資料根目錄仍有殘留 PDF 需人工釐清歸屬，新進勞健保團保資料也有殘留檔案待確認歸檔。</td>
+  <td class="rate-cell"><div class="rate-wrap"><div class="rate-bar" style="width:10%;background:#dc3545"></div><input class="rate-input" type="number" min="0" max="100" value="10" oninput="updateRate(this)"></div></td>
   <td class="deadline-cell">2026/07/31</td>
   <td class="rag-cell"><span class="rag-badge" style="background:#e6a800">🟡 待改善</span></td>
-  <td class="blocker-cell"><span class="blocker-text">程式長期無 log</span></td>
+  <td class="blocker-cell"><span class="blocker-text">勞保加退保 RPA 無 log，退保資料殘留需人工釐清</span></td>
   <td class="action-cell"><button class="edit-btn" onclick="startEdit(this)">✏️ 編輯</button></td>
 </tr>
 
@@ -1269,7 +1403,7 @@
   <td>外部：每天減少加班單約200-300張(400分-600分)</td>
   <td class="goal-cell">1.加班作業自動化<br>2.作業獎金評核自動化</td>
   <td class="owner-cell">Bella</td>
-  <td class="result-cell">本週在加班作業自動化方面，完成了全興廠例假日加班模板建立，並開發了加班紀錄分站點審核寄發腳本及異常檢核工具。作業獎金部分，擴充了浮動薪資模板，並新增離職員工作業獎金資格檢核。</td>
+  <td class="result-cell">本週在加班作業自動化方面有顯著進展，完成了加班紀錄分站點審核寄發腳本開發，並建立了加班時數異常檢核工具。同時，因應BPM系統異常，產出了加班單代提模板。作業獎金部分，則完成了5月作業獎金重核，並標記待HRM手動調整。</td>
   <td class="rate-cell"><div class="rate-wrap"><div class="rate-bar" style="width:85%;background:#28a745"></div><input class="rate-input" type="number" min="0" max="100" value="85" oninput="updateRate(this)"></div></td>
   <td class="deadline-cell">2026/06/30</td>
   <td class="rag-cell"><span class="rag-badge" style="background:#28a745">🟢 正常推進</span></td>
@@ -1277,15 +1411,15 @@
   <td class="action-cell"><button class="edit-btn" onclick="startEdit(this)">✏️ 編輯</button></td>
 </tr>
 
-<tr class="row-green" data-row-key="2174d56f37" data-rag="正常推進" data-rate="85">
+<tr class="row-yellow" data-row-key="2174d56f37" data-rag="待改善" data-rate="80">
   <td class="cat-cell" rowspan="1"><span class="cat-label">訓練系統</span></td>
   <td>HR人力4->2名</td>
   <td class="goal-cell">1.AI認證系統<br>2.活動報名系統<br>3.訓練證照履歷自動更新與通知</td>
   <td class="owner-cell">Bella</td>
-  <td class="result-cell">本週企業內訓平台專案成功進行Git版控初始化，並開發完成證照手動通知紀錄功能，涵蓋前端UI、後端API與資料庫設計，並提交了相關設計文件。</td>
-  <td class="rate-cell"><div class="rate-wrap"><div class="rate-bar" style="width:85%;background:#28a745"></div><input class="rate-input" type="number" min="0" max="100" value="85" oninput="updateRate(this)"></div></td>
+  <td class="result-cell">本週無實質進度。</td>
+  <td class="rate-cell"><div class="rate-wrap"><div class="rate-bar" style="width:80%;background:#28a745"></div><input class="rate-input" type="number" min="0" max="100" value="80" oninput="updateRate(this)"></div></td>
   <td class="deadline-cell">2026/06/30</td>
-  <td class="rag-cell"><span class="rag-badge" style="background:#28a745">🟢 正常推進</span></td>
+  <td class="rag-cell"><span class="rag-badge" style="background:#e6a800">🟡 待改善</span></td>
   <td class="blocker-cell"><span class="no-blocker">—</span></td>
   <td class="action-cell"><button class="edit-btn" onclick="startEdit(this)">✏️ 編輯</button></td>
 </tr>
@@ -1295,24 +1429,24 @@
   <td>HR召募作業流程可以無人工</td>
   <td class="goal-cell">1.自動串連104人力銀行<br>2.面試人員資料自動轉為新人資料串連至鼎新HRM系統<br>3.Ai面試官建置</td>
   <td class="owner-cell">詩紜</td>
-  <td class="result-cell">本週推進ATS API權限整合，統一所有腳本token。完成ATS體檢報告與員工姓名對應確認，為新進報到串聯前置作業。新進人員體檢報告自動寄工安專案最終定版並納入Windows排程，預計6/5首跑。招募管理系統VScode本地開發環境建置，匯入Replit資料至本地PostgreSQL，並啟動前後端伺服器。</td>
+  <td class="result-cell">ATS 系統文件繳交狀態未自動更新 Bug 已撰寫修復與驗證 prompt 給 Replit 執行，待回報結果。已報到準員工資料下載排程由每月最後一天改為每月 27 號，並同步更新記憶檔。新增「永續健康研究病理研究分析師」職缺規則並指派收件主管。</td>
   <td class="rate-cell"><div class="rate-wrap"><div class="rate-bar" style="width:85%;background:#28a745"></div><input class="rate-input" type="number" min="0" max="100" value="85" oninput="updateRate(this)"></div></td>
   <td class="deadline-cell">2026/06/30</td>
   <td class="rag-cell"><span class="rag-badge" style="background:#28a745">🟢 正常推進</span></td>
-  <td class="blocker-cell"><span class="blocker-text">招募管理系統VScode開發伺服器重啟失敗（exit code 4）</span></td>
+  <td class="blocker-cell"><span class="blocker-text">等待 Replit 回報 ATS 文件繳交狀態 Bug 修復結果</span></td>
   <td class="action-cell"><button class="edit-btn" onclick="startEdit(this)">✏️ 編輯</button></td>
 </tr>
 
-<tr class="row-green" data-row-key="1f9764e2a6" data-rag="正常推進" data-rate="30">
+<tr class="row-green" data-row-key="1f9764e2a6" data-rag="正常推進" data-rate="25">
   <td class="cat-cell" rowspan="1"><span class="cat-label">碳平台管理系統</span></td>
   <td>係數庫EXCEL整理更新時間需1週以上--直接帶入數據</td>
   <td class="goal-cell">1.完善與 Excel 完全對齊的「係數庫管理」與匯入功能<br>2.上線水電單據 OCR 辨識與鼎新報表一鍵拋轉<br>3.將碳盤查平台數據儀表版化</td>
   <td class="owner-cell">婕誼</td>
-  <td class="result-cell">本週在「14064 AI自動化腳本」專案中，婕誼積極處理HTML報告的生成與整合，並嘗試將工作報告轉為週追蹤HTML，產出多個相關檔案與腳本，顯示在自動化與數位化流程方面有顯著推進。</td>
-  <td class="rate-cell"><div class="rate-wrap"><div class="rate-bar" style="width:30%;background:#dc3545"></div><input class="rate-input" type="number" min="0" max="100" value="30" oninput="updateRate(this)"></div></td>
+  <td class="result-cell">本週持續進行AI自動化腳本相關工作，並處理了多個與報表部署相關的HTML和Python檔案，顯示在自動化和報告系統建置方面有推進。特別是GitHub Pages部署準備，以及對密碼外洩的關注，顯示在系統安全性與部署方面有考量。</td>
+  <td class="rate-cell"><div class="rate-wrap"><div class="rate-bar" style="width:25%;background:#dc3545"></div><input class="rate-input" type="number" min="0" max="100" value="25" oninput="updateRate(this)"></div></td>
   <td class="deadline-cell">2026/07/31</td>
   <td class="rag-cell"><span class="rag-badge" style="background:#28a745">🟢 正常推進</span></td>
-  <td class="blocker-cell"><span class="blocker-text">Terminal命令執行失敗</span></td>
+  <td class="blocker-cell"><span class="blocker-text">GitHub部署密碼外洩疑慮，BPM上傳附件打不開。</span></td>
   <td class="action-cell"><button class="edit-btn" onclick="startEdit(this)">✏️ 編輯</button></td>
 </tr>
 
@@ -1342,13 +1476,13 @@
   <td class="action-cell"><button class="edit-btn" onclick="startEdit(this)">✏️ 編輯</button></td>
 </tr>
 
-<tr class="row-green" data-row-key="40d0b45708" data-rag="正常推進" data-rate="40">
+<tr class="row-green" data-row-key="40d0b45708" data-rag="正常推進" data-rate="35">
   <td class="cat-cell" rowspan="1"><span class="cat-label">職安(OHS)系統</span></td>
   <td>減少職安人員行政作業時間(80時/月)</td>
   <td class="goal-cell">1.腳本自動鑑別並更新職安相關法規<br>2.AI問答機器人提供前端作業主管/人員隨時辨識及評估風險，並自動生成改善建議<br>3.每日自動抓取工安情報及新聞，供同仁瀏覽並留存作為訓練之教材<br>4.串連BPM分析公司工傷事故<br>5.職護臨場服務名單自動篩選並發送通知、並進行健康追蹤<br>6.承攬商管理線上化<br>7.現場6S點檢結合OCR自動評分，未來作為競賽或獎金基準</td>
   <td class="owner-cell">佑毓</td>
-  <td class="result-cell">本週佑毓持續進行法規鑑別互動網站的開發與修正，包含本機檔案的更新與GitHub Pages的部署。同時，也嘗試將此功能新增到新的index頁面，並研究資料庫的建立方式。</td>
-  <td class="rate-cell"><div class="rate-wrap"><div class="rate-bar" style="width:40%;background:#dc3545"></div><input class="rate-input" type="number" min="0" max="100" value="40" oninput="updateRate(this)"></div></td>
+  <td class="result-cell">本週佑毓持續進行職安相關系統的開發與維護，其中包含法規與教材系統的顏色調整與圖示更換，以及針對law-chatbot的程式碼進行檢視，並嘗試生成新的網址，顯示對法規自動鑑別與更新的持續關注。</td>
+  <td class="rate-cell"><div class="rate-wrap"><div class="rate-bar" style="width:35%;background:#dc3545"></div><input class="rate-input" type="number" min="0" max="100" value="35" oninput="updateRate(this)"></div></td>
   <td class="deadline-cell">2026/06/30</td>
   <td class="rag-cell"><span class="rag-badge" style="background:#28a745">🟢 正常推進</span></td>
   <td class="blocker-cell"><span class="no-blocker">—</span></td>
@@ -1366,155 +1500,19 @@
 
   <script>
     function showTab(name, btn) {
+      // 切換面板
       document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
       document.getElementById('tab-' + name).classList.add('active');
+      // 切換按鈕樣式
       document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
     }
     function updateRate(inp) {
       var v = Math.min(Math.max(parseInt(inp.value) || 0, 0), 100);
-      var bar = inp.closest('.rate-wrap').querySelector('.rate-bar');
+      var bar = inp.previousElementSibling;
       var color = v >= 100 ? '#1a8c6e' : v >= 80 ? '#28a745' : v >= 60 ? '#e6a800' : '#dc3545';
       bar.style.width = v + '%';
       bar.style.background = color;
-    }
-
-    /* ── 編輯功能 ── */
-    var WEEK_KEY = '2026/05/27（三） ~ 2026/06/02（二）';
-    function _lsKey(k) { return 'hrtrack_' + WEEK_KEY + '_' + k; }
-    function _esc(s) {
-      return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-    }
-    function _rateColor(v) {
-      return v >= 100 ? '#1a8c6e' : v >= 80 ? '#28a745' : v >= 60 ? '#e6a800' : '#dc3545';
-    }
-    var RAG_META = {
-      '已完成':   { color: '#1a8c6e', label: '✅ 已完成' },
-      '正常推進': { color: '#28a745', label: '🟢 正常推進' },
-      '待改善':   { color: '#e6a800', label: '🟡 待改善' },
-      '卡關':     { color: '#dc3545', label: '🔴 卡關' },
-      '本週無資料': { color: '#adb5bd', label: '⚪ 本週無資料' }
-    };
-    var RAG_ROW_CLASS = {
-      '已完成':'row-done', '正常推進':'row-green',
-      '待改善':'row-yellow', '卡關':'row-red', '本週無資料':'row-none'
-    };
-    function _ragBadge(rag) {
-      var m = RAG_META[rag] || { color: '#adb5bd', label: '⚪ ' + rag };
-      return '<span class="rag-badge" style="background:' + m.color + '">' + m.label + '</span>';
-    }
-    function _rateBarHtml(rate) {
-      var c = _rateColor(rate);
-      return '<div class="rate-wrap">'
-        + '<div class="rate-bar" style="width:' + Math.min(rate,100) + '%;background:' + c + '"></div>'
-        + '<input class="rate-input" type="number" min="0" max="100" value="' + rate + '" oninput="updateRate(this)">'
-        + '</div>';
-    }
-    function startEdit(btn) {
-      var tr = btn.closest('tr');
-      var resultCell  = tr.querySelector('.result-cell');
-      var rateCell    = tr.querySelector('.rate-cell');
-      var ragCell     = tr.querySelector('.rag-cell');
-      var blockerCell = tr.querySelector('.blocker-cell');
-      var actionCell  = tr.querySelector('.action-cell');
-      tr.dataset.origResult  = resultCell.innerHTML;
-      tr.dataset.origRate    = rateCell.innerHTML;
-      tr.dataset.origRag     = ragCell.innerHTML;
-      tr.dataset.origBlocker = blockerCell.innerHTML;
-      var curResult  = resultCell.innerText.trim();
-      var rateInp    = rateCell.querySelector('.rate-input');
-      var curRate    = rateInp ? rateInp.value : (tr.dataset.rate || '0');
-      var curRag     = tr.dataset.rag || '待改善';
-      var curBlocker = (blockerCell.querySelector('.blocker-text') || { innerText: '' }).innerText.trim();
-      resultCell.innerHTML = '<textarea class="edit-textarea">' + _esc(curResult) + '</textarea>';
-      var opts = ['已完成','正常推進','待改善','卡關','本週無資料'];
-      var selHtml = '<select class="edit-select">';
-      opts.forEach(function(o) {
-        selHtml += '<option value="' + o + '"' + (o === curRag ? ' selected' : '') + '>' + o + '</option>';
-      });
-      selHtml += '</select>';
-      ragCell.innerHTML = selHtml;
-      blockerCell.innerHTML = '<textarea class="edit-textarea">' + _esc(curBlocker) + '</textarea>';
-      actionCell.innerHTML =
-        '<button class="save-btn" onclick="saveEdit(this)">✅ 儲存</button>'
-        + '<button class="cancel-btn" onclick="cancelEdit(this)">✕ 取消</button>';
-    }
-    function saveEdit(btn) {
-      var tr = btn.closest('tr');
-      var rowKey = tr.dataset.rowKey;
-      var resultCell  = tr.querySelector('.result-cell');
-      var rateCell    = tr.querySelector('.rate-cell');
-      var ragCell     = tr.querySelector('.rag-cell');
-      var blockerCell = tr.querySelector('.blocker-cell');
-      var actionCell  = tr.querySelector('.action-cell');
-      var newResult  = resultCell.querySelector('textarea').value.trim();
-      var rateInp    = rateCell.querySelector('.rate-input');
-      var newRate    = rateInp ? Math.max(0, Math.min(100, parseInt(rateInp.value) || 0)) : 0;
-      var newRag     = ragCell.querySelector('select').value;
-      var newBlocker = blockerCell.querySelector('textarea').value.trim();
-      tr.dataset.rag  = newRag;
-      tr.dataset.rate = newRate;
-      resultCell.innerHTML  = newResult || '—';
-      rateCell.innerHTML    = _rateBarHtml(newRate);
-      ragCell.innerHTML     = _ragBadge(newRag);
-      blockerCell.innerHTML = newBlocker
-        ? '<span class="blocker-text">' + _esc(newBlocker) + '</span>'
-        : '<span class="no-blocker">—</span>';
-      actionCell.innerHTML  = '<button class="edit-btn" onclick="startEdit(this)">✏️ 編輯</button>';
-      Object.values(RAG_ROW_CLASS).forEach(function(c){ tr.classList.remove(c); });
-      tr.classList.add(RAG_ROW_CLASS[newRag] || 'row-none');
-      tr.classList.add('row-edited');
-      if (rowKey) {
-        localStorage.setItem(_lsKey(rowKey), JSON.stringify({ result: newResult, rate: newRate, rag: newRag, blocker: newBlocker }));
-      }
-    }
-    function cancelEdit(btn) {
-      var tr = btn.closest('tr');
-      tr.querySelector('.result-cell').innerHTML  = tr.dataset.origResult;
-      tr.querySelector('.rate-cell').innerHTML    = tr.dataset.origRate;
-      tr.querySelector('.rag-cell').innerHTML     = tr.dataset.origRag;
-      tr.querySelector('.blocker-cell').innerHTML = tr.dataset.origBlocker;
-      tr.querySelector('.action-cell').innerHTML  = '<button class="edit-btn" onclick="startEdit(this)">✏️ 編輯</button>';
-    }
-    function restoreEdits() {
-      document.querySelectorAll('tr[data-row-key]').forEach(function(tr) {
-        var raw = localStorage.getItem(_lsKey(tr.dataset.rowKey));
-        if (!raw) return;
-        var s; try { s = JSON.parse(raw); } catch(e) { return; }
-        var resultCell  = tr.querySelector('.result-cell');
-        var rateCell    = tr.querySelector('.rate-cell');
-        var ragCell     = tr.querySelector('.rag-cell');
-        var blockerCell = tr.querySelector('.blocker-cell');
-        if (!resultCell) return;
-        tr.dataset.rag  = s.rag;
-        tr.dataset.rate = s.rate;
-        resultCell.innerHTML  = s.result || '—';
-        rateCell.innerHTML    = _rateBarHtml(s.rate);
-        ragCell.innerHTML     = _ragBadge(s.rag);
-        blockerCell.innerHTML = s.blocker
-          ? '<span class="blocker-text">' + _esc(s.blocker) + '</span>'
-          : '<span class="no-blocker">—</span>';
-        Object.values(RAG_ROW_CLASS).forEach(function(c){ tr.classList.remove(c); });
-        tr.classList.add(RAG_ROW_CLASS[s.rag] || 'row-none');
-        tr.classList.add('row-edited');
-      });
-    }
-    document.addEventListener('DOMContentLoaded', restoreEdits);
-    function exportCorrections() {
-      var corrections = [];
-      document.querySelectorAll('tr.row-edited[data-row-key]').forEach(function(tr) {
-        var raw = localStorage.getItem(_lsKey(tr.dataset.rowKey));
-        if (!raw) return;
-        try { var s = JSON.parse(raw); s.row_key = tr.dataset.rowKey; corrections.push(s); } catch(e) {}
-      });
-      if (corrections.length === 0) { alert('尚無修正資料，請先編輯並儲存。'); return; }
-      var blob = new Blob([JSON.stringify({ week: WEEK_KEY, corrections: corrections }, null, 2)], { type: 'application/json;charset=utf-8' });
-      var url = URL.createObjectURL(blob);
-      var a = document.createElement('a');
-      a.href = url;
-      a.download = '人資週報修正_' + WEEK_KEY.replace(/[\/\s~（）]/g,'') + '.json';
-      document.body.appendChild(a); a.click(); document.body.removeChild(a);
-      URL.revokeObjectURL(url);
     }
     function downloadHTML() {
       /* 下載當前頁面完整 HTML */

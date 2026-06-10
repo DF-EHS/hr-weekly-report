@@ -259,30 +259,35 @@
 <header class="page-header">
   <h1>📋 人資部週追蹤報告</h1>
   <div class="header-meta">
-    <span>📅 週期：2026/05/27（三） ~ 2026/06/02（二）</span>
-    <span>🕐 產生時間：2026-05-28 14:47</span>
+    <span>📅 週期：2026/06/01（一） ~ 2026/06/07（日）</span>
+    <span>🕐 產生時間：2026-06-10 09:32</span>
   </div>
 </header>
+
+<!-- 匯出列 -->
+<div class="export-bar">
+  <button class="html-btn" onclick="downloadHTML()">&#128190; 下載 HTML 報告</button>
+</div>
 
 <!-- 摘要統計列 -->
 <div class="stats-bar">
   <div class="stat-chip chip-total">
-    <span class="stat-num">11</span> 追蹤項目
+    <span class="stat-num">13</span> 追蹤項目
   </div>
   <div class="stat-chip chip-done">
     <span class="stat-num">2</span> ✅ 已完成
   </div>
   <div class="stat-chip chip-green">
-    <span class="stat-num">7</span> 🟢 正常推進
+    <span class="stat-num">4</span> 🟢 正常推進
   </div>
   <div class="stat-chip chip-yellow">
-    <span class="stat-num">1</span> 🟡 待改善
+    <span class="stat-num">5</span> 🟡 待改善
   </div>
   <div class="stat-chip chip-red">
     <span class="stat-num">0</span> 🔴 卡關
   </div>
   <div class="stat-chip chip-none">
-    <span class="stat-num">1</span> ⚪ 本週無資料
+    <span class="stat-num">2</span> ⚪ 本週無資料
   </div>
 </div>
 
@@ -324,132 +329,169 @@
       </tr>
     </thead>
     <tbody>
-      <tr class="row-done">
+      <tr class="row-done" data-row-key="f0e9ba0655" data-rag="已完成" data-rate="100">
   <td class="cat-cell" rowspan="4"><span class="cat-label">報表自動化</span></td>
   <td>HR人力4->2名</td>
   <td class="goal-cell">每月人力效益報表(已完成，持續優化)</td>
-  <td class="owner-cell"><span class="owner-badge" style="background:#6c757d">婕誼</span></td>
-  <td class="result-cell">本週日誌中未明確提及「每月人力效益報表」的直接進度。然而，婕誼持續進行獎金分析相關工作，這可能與人力效益的評估間接相關，但無直接證據顯示有優化進度。</td>
-  <td class="rate-cell"><div class="rate-wrap"><div class="rate-bar" style="width:100%;background:#1a8c6e"></div><span class="rate-label">100%</span></div></td>
+  <td class="owner-cell">婕誼</td>
+  <td class="result-cell">本週日誌中未明確提及「每月人力效益報表」的具體進度，但有處理多份與人力相關的Excel文件，如《專案拓展部專案計畫人員清冊》和《在職人員名單》，可能間接與此報表優化相關。</td>
+  <td class="rate-cell"><div class="rate-wrap"><div class="rate-bar" style="width:100%;background:#1a8c6e"></div><input class="rate-input" type="number" min="0" max="100" value="100" oninput="updateRate(this)"></div></td>
   <td class="deadline-cell">2026/03/31</td>
   <td class="rag-cell"><span class="rag-badge" style="background:#1a8c6e">✅ 已完成</span></td>
   <td class="blocker-cell"><span class="no-blocker">—</span></td>
+  <td class="action-cell"><button class="edit-btn" onclick="startEdit(this)">✏️ 編輯</button></td>
 </tr>
 
-<tr class="row-done">
+<tr class="row-done" data-row-key="0c303d8311" data-rag="已完成" data-rate="100">
   <td>HR人力4->2名</td>
   <td class="goal-cell">人力變化報表(已完成，持續優化)</td>
-  <td class="owner-cell"><span class="owner-badge" style="background:#6c757d">婕誼</span></td>
-  <td class="result-cell">本週婕誼在5月27日的工作日誌中提及「Agents-人力變化」相關工作，顯示此項目仍在持續進行中。雖然未有具體優化細節，但有持續關注與處理。</td>
-  <td class="rate-cell"><div class="rate-wrap"><div class="rate-bar" style="width:100%;background:#1a8c6e"></div><span class="rate-label">100%</span></div></td>
+  <td class="owner-cell">婕誼</td>
+  <td class="result-cell">本週日誌中未明確提及「人力變化報表」的具體進度，但有處理《員工人數.xlsx》等文件，並在06/01日誌中提及「Agents-人力變化」相關討論，可能與此報表優化有關。</td>
+  <td class="rate-cell"><div class="rate-wrap"><div class="rate-bar" style="width:100%;background:#1a8c6e"></div><input class="rate-input" type="number" min="0" max="100" value="100" oninput="updateRate(this)"></div></td>
   <td class="deadline-cell">2026/03/31</td>
   <td class="rag-cell"><span class="rag-badge" style="background:#1a8c6e">✅ 已完成</span></td>
   <td class="blocker-cell"><span class="no-blocker">—</span></td>
+  <td class="action-cell"><button class="edit-btn" onclick="startEdit(this)">✏️ 編輯</button></td>
 </tr>
 
-<tr class="row-green">
+<tr class="row-yellow" data-row-key="8e0871ee24" data-rag="待改善" data-rate="0">
   <td>HR人力4->2名</td>
   <td class="goal-cell">薪資調整變化</td>
-  <td class="owner-cell"><span class="owner-badge" style="background:#6c757d">婕誼</span></td>
-  <td class="result-cell">本週日誌中，婕誼修改了多份與獎金和佣金制度相關的文件，例如《D3-SD-062專案拓展部獎金管理準則.docx》和《2026_PCR_季度業績佣金制度_正式版.docx》，這些工作與薪資調整變化有高度關聯性。</td>
-  <td class="rate-cell"><div class="rate-wrap"><div class="rate-bar" style="width:20%;background:#dc3545"></div><span class="rate-label">20%</span></div></td>
+  <td class="owner-cell">婕誼</td>
+  <td class="result-cell">本週無實質進度。</td>
+  <td class="rate-cell"><div class="rate-wrap"><div class="rate-bar" style="width:0%;background:#dc3545"></div><input class="rate-input" type="number" min="0" max="100" value="0" oninput="updateRate(this)"></div></td>
   <td class="deadline-cell">2026/06/30</td>
-  <td class="rag-cell"><span class="rag-badge" style="background:#28a745">🟢 正常推進</span></td>
+  <td class="rag-cell"><span class="rag-badge" style="background:#e6a800">🟡 待改善</span></td>
   <td class="blocker-cell"><span class="no-blocker">—</span></td>
+  <td class="action-cell"><button class="edit-btn" onclick="startEdit(this)">✏️ 編輯</button></td>
 </tr>
 
-<tr class="row-green">
+<tr class="row-yellow" data-row-key="18de5adb77" data-rag="待改善" data-rate="0">
   <td>HR人力4->2名</td>
   <td class="goal-cell">招募效益相關分析</td>
-  <td class="owner-cell"><span class="owner-badge" style="background:#2a7dd9">詩紜</span></td>
-  <td class="result-cell">本週詩紜彙整了五股FB刊登職缺的最新狀況與問卷聯繫名單草稿，並規劃在完整投遞後產出最終版寄送用人單位主管。同時，她也更新了2026年召募達成率報表的5月待報到清單與缺額統計。</td>
-  <td class="rate-cell"><div class="rate-wrap"><div class="rate-bar" style="width:20%;background:#dc3545"></div><span class="rate-label">20%</span></div></td>
+  <td class="owner-cell">詩紜</td>
+  <td class="result-cell">本週無實質進度。</td>
+  <td class="rate-cell"><div class="rate-wrap"><div class="rate-bar" style="width:0%;background:#dc3545"></div><input class="rate-input" type="number" min="0" max="100" value="0" oninput="updateRate(this)"></div></td>
   <td class="deadline-cell">2026/06/30</td>
-  <td class="rag-cell"><span class="rag-badge" style="background:#28a745">🟢 正常推進</span></td>
+  <td class="rag-cell"><span class="rag-badge" style="background:#e6a800">🟡 待改善</span></td>
   <td class="blocker-cell"><span class="no-blocker">—</span></td>
+  <td class="action-cell"><button class="edit-btn" onclick="startEdit(this)">✏️ 編輯</button></td>
 </tr>
 
-<tr class="row-green">
+<tr class="row-green" data-row-key="ac879d7916" data-rag="正常推進" data-rate="10">
   <td class="cat-cell" rowspan="2"><span class="cat-label">人資作業自動化</span></td>
   <td>HR人力4->2名</td>
   <td class="goal-cell">新進人員加保、退保自動化</td>
-  <td class="owner-cell"><span class="owner-badge" style="background:#2a7dd9">詩紜</span></td>
-  <td class="result-cell">本週詩紜完成了新進人員體檢報告自動寄送工安專案的最終定版，修正了外場人員規則、整合上月離職清單並特別標註留停類別，同時擴充了CC收件人。此腳本已納入Windows排程，預計6/5首次執行。</td>
-  <td class="rate-cell"><div class="rate-wrap"><div class="rate-bar" style="width:60%;background:#e6a800"></div><span class="rate-label">60%</span></div></td>
+  <td class="owner-cell">詩紜</td>
+  <td class="result-cell">本週排程維護，將「下載已報到員工資料到 KM」排程由每月最後一天改為每月 27 號，並同步更新記憶檔，以避免跨月日期不固定造成偏移。另有退保資料根目錄殘留待釐清。</td>
+  <td class="rate-cell"><div class="rate-wrap"><div class="rate-bar" style="width:10%;background:#dc3545"></div><input class="rate-input" type="number" min="0" max="100" value="10" oninput="updateRate(this)"></div></td>
   <td class="deadline-cell">2026/07/31</td>
   <td class="rag-cell"><span class="rag-badge" style="background:#28a745">🟢 正常推進</span></td>
-  <td class="blocker-cell"><span class="no-blocker">—</span></td>
+  <td class="blocker-cell"><span class="blocker-text">退保資料根目錄殘留待釐清</span></td>
+  <td class="action-cell"><button class="edit-btn" onclick="startEdit(this)">✏️ 編輯</button></td>
 </tr>
 
-<tr class="row-yellow">
+<tr class="row-yellow" data-row-key="fa9755f834" data-rag="待改善" data-rate="0">
   <td>HR人力4->2名</td>
   <td class="goal-cell">投保證明下載自動化</td>
-  <td class="owner-cell"><span class="owner-badge" style="background:#2a7dd9">詩紜</span></td>
+  <td class="owner-cell">詩紜</td>
   <td class="result-cell">本週無實質進度。</td>
-  <td class="rate-cell"><div class="rate-wrap"><div class="rate-bar" style="width:0%;background:#dc3545"></div><span class="rate-label">0%</span></div></td>
+  <td class="rate-cell"><div class="rate-wrap"><div class="rate-bar" style="width:0%;background:#dc3545"></div><input class="rate-input" type="number" min="0" max="100" value="0" oninput="updateRate(this)"></div></td>
   <td class="deadline-cell">2026/07/31</td>
   <td class="rag-cell"><span class="rag-badge" style="background:#e6a800">🟡 待改善</span></td>
   <td class="blocker-cell"><span class="no-blocker">—</span></td>
+  <td class="action-cell"><button class="edit-btn" onclick="startEdit(this)">✏️ 編輯</button></td>
 </tr>
 
-<tr class="row-green">
+<tr class="row-green" data-row-key="965cfdc227" data-rag="正常推進" data-rate="85">
   <td class="cat-cell" rowspan="1"><span class="cat-label">加班與作業獎金系統</span></td>
   <td>外部：每天減少加班單約200-300張(400分-600分)</td>
   <td class="goal-cell">1.加班作業自動化<br>2.作業獎金評核自動化</td>
-  <td class="owner-cell"><span class="owner-badge" style="background:#7b5ea7">Bella</span></td>
-  <td class="result-cell">本週完成全興廠115年5月例假日加班申請模板自動產出。薪資結構調整計畫已完成11位全興廠員工薪資結構調整試算表，包含前後對比及差額說明，並修正薪資加總錯誤。每月薪資結算前影響名單比對腳本已完成架構設計，規劃7大薪資影響項目比對範圍。</td>
-  <td class="rate-cell"><div class="rate-wrap"><div class="rate-bar" style="width:85%;background:#28a745"></div><span class="rate-label">85%</span></div></td>
+  <td class="owner-cell">Bella</td>
+  <td class="result-cell">本週在加班作業自動化方面有顯著進展，完成了加班紀錄分站點審核寄發腳本開發，並建立了加班時數異常檢核工具。同時，因應BPM系統異常，產出了加班單代提模板。作業獎金方面，完成了5月作業獎金重核，並標記待HRM手動調整。</td>
+  <td class="rate-cell"><div class="rate-wrap"><div class="rate-bar" style="width:85%;background:#28a745"></div><input class="rate-input" type="number" min="0" max="100" value="85" oninput="updateRate(this)"></div></td>
   <td class="deadline-cell">2026/06/30</td>
   <td class="rag-cell"><span class="rag-badge" style="background:#28a745">🟢 正常推進</span></td>
-  <td class="blocker-cell"><span class="no-blocker">—</span></td>
+  <td class="blocker-cell"><span class="blocker-text">HRM-BPM串接異常導致員工無法自行送單</span></td>
+  <td class="action-cell"><button class="edit-btn" onclick="startEdit(this)">✏️ 編輯</button></td>
 </tr>
 
-<tr class="row-green">
+<tr class="row-yellow" data-row-key="2174d56f37" data-rag="待改善" data-rate="80">
   <td class="cat-cell" rowspan="1"><span class="cat-label">訓練系統</span></td>
   <td>HR人力4->2名</td>
   <td class="goal-cell">1.AI認證系統<br>2.活動報名系統<br>3.訓練證照履歷自動更新與通知</td>
-  <td class="owner-cell"><span class="owner-badge" style="background:#7b5ea7">Bella</span></td>
-  <td class="result-cell">本週企業內訓平台專案已成功進行Git版控初始化，並建立dev-v1.0分支。證照手動通知紀錄功能已完成開發，包含前端UI、後端API與資料庫設計，並提交設計文件。</td>
-  <td class="rate-cell"><div class="rate-wrap"><div class="rate-bar" style="width:85%;background:#28a745"></div><span class="rate-label">85%</span></div></td>
+  <td class="owner-cell">Bella</td>
+  <td class="result-cell">本週無實質進度。</td>
+  <td class="rate-cell"><div class="rate-wrap"><div class="rate-bar" style="width:80%;background:#28a745"></div><input class="rate-input" type="number" min="0" max="100" value="80" oninput="updateRate(this)"></div></td>
   <td class="deadline-cell">2026/06/30</td>
-  <td class="rag-cell"><span class="rag-badge" style="background:#28a745">🟢 正常推進</span></td>
+  <td class="rag-cell"><span class="rag-badge" style="background:#e6a800">🟡 待改善</span></td>
   <td class="blocker-cell"><span class="no-blocker">—</span></td>
+  <td class="action-cell"><button class="edit-btn" onclick="startEdit(this)">✏️ 編輯</button></td>
 </tr>
 
-<tr class="row-green">
+<tr class="row-green" data-row-key="60b43bc0d2" data-rag="正常推進" data-rate="85">
   <td class="cat-cell" rowspan="1"><span class="cat-label">召募系統</span></td>
   <td>HR召募作業流程可以無人工</td>
   <td class="goal-cell">1.自動串連104人力銀行<br>2.面試人員資料自動轉為新人資料串連至鼎新HRM系統<br>3.Ai面試官建置</td>
-  <td class="owner-cell"><span class="owner-badge" style="background:#2a7dd9">詩紜</span></td>
-  <td class="result-cell">本週詩紜完成了ATS API權限整合，將所有腳本統一替換為最大權限token，解決了資料抓取限制。她也確認了ATS體檢報告可對應到員工姓名，作為新進報到串聯的前置作業。此外，招募管理系統的VScode本地開發環境已建置，並匯入Replit資料。</td>
-  <td class="rate-cell"><div class="rate-wrap"><div class="rate-bar" style="width:85%;background:#28a745"></div><span class="rate-label">85%</span></div></td>
+  <td class="owner-cell">詩紜</td>
+  <td class="result-cell">本週針對 ATS 系統文件繳交狀態未自動更新的 Bug 撰寫修復與驗證 prompt 給 Replit，並新增「永續健康研究病理研究分析師」職缺規則至履歷自動篩選系統。同時，健康科技研發新事業體職缺文案已定稿，待提交 104 上架。</td>
+  <td class="rate-cell"><div class="rate-wrap"><div class="rate-bar" style="width:85%;background:#28a745"></div><input class="rate-input" type="number" min="0" max="100" value="85" oninput="updateRate(this)"></div></td>
   <td class="deadline-cell">2026/06/30</td>
   <td class="rag-cell"><span class="rag-badge" style="background:#28a745">🟢 正常推進</span></td>
-  <td class="blocker-cell"><span class="blocker-text">招募管理系統VScode開發伺服器重啟失敗</span></td>
+  <td class="blocker-cell"><span class="blocker-text">等待 Replit 回報 ATS Bug 修復結果</span></td>
+  <td class="action-cell"><button class="edit-btn" onclick="startEdit(this)">✏️ 編輯</button></td>
 </tr>
 
-<tr class="row-green">
+<tr class="row-green" data-row-key="1f9764e2a6" data-rag="正常推進" data-rate="30">
   <td class="cat-cell" rowspan="1"><span class="cat-label">碳平台管理系統</span></td>
   <td>係數庫EXCEL整理更新時間需1週以上--直接帶入數據</td>
   <td class="goal-cell">1.完善與 Excel 完全對齊的「係數庫管理」與匯入功能<br>2.上線水電單據 OCR 辨識與鼎新報表一鍵拋轉<br>3.將碳盤查平台數據儀表版化</td>
-  <td class="owner-cell"><span class="owner-badge" style="background:#6c757d">婕誼</span></td>
-  <td class="result-cell">本週婕誼在5月28日的工作日誌中提及「週追蹤報告：目前同仁每日會寄工作報告到我的信箱。我想要把這些工作報告轉成週追蹤的html」，這顯示她正在嘗試將重複性工作自動化，並將報告數位化，與數位轉型目標相關。此外，她也進行了「update_logs.py」的相關工作，可能與數據處理或自動化腳本有關。</td>
-  <td class="rate-cell"><div class="rate-wrap"><div class="rate-bar" style="width:25%;background:#dc3545"></div><span class="rate-label">25%</span></div></td>
+  <td class="owner-cell">婕誼</td>
+  <td class="result-cell">本週持續進行AI自動化腳本的開發與討論，特別是關於`/create-agent`功能與建置介紹，以及GitHub Pages部署準備。日誌中提及BPM自動化流程問題討論，並有修改多個html和python腳本，顯示在自動化和系統整合方面有持續推進。</td>
+  <td class="rate-cell"><div class="rate-wrap"><div class="rate-bar" style="width:30%;background:#dc3545"></div><input class="rate-input" type="number" min="0" max="100" value="30" oninput="updateRate(this)"></div></td>
   <td class="deadline-cell">2026/07/31</td>
   <td class="rag-cell"><span class="rag-badge" style="background:#28a745">🟢 正常推進</span></td>
-  <td class="blocker-cell"><span class="no-blocker">—</span></td>
+  <td class="blocker-cell"><span class="blocker-text">BPM上傳附件打不開</span></td>
+  <td class="action-cell"><button class="edit-btn" onclick="startEdit(this)">✏️ 編輯</button></td>
 </tr>
 
-<tr class="row-none">
+<tr class="row-none" data-row-key="bf768b61d0" data-rag="" data-rate="20">
   <td class="cat-cell" rowspan="1"><span class="cat-label">合約審核系統</span></td>
   <td>80H/月</td>
   <td class="goal-cell">1.合約AI審核流程<br>2.合約追蹤進度<br>3.串連BPM簽核流程<br>4.串連CRM存檔</td>
-  <td class="owner-cell"><span class="owner-badge" style="background:#c0392b">柏羽</span></td>
+  <td class="owner-cell">柏羽</td>
   <td class="result-cell">—</td>
-  <td class="rate-cell"><div class="rate-wrap"><div class="rate-bar" style="width:20%;background:#dc3545"></div><span class="rate-label">20%</span></div></td>
+  <td class="rate-cell"><div class="rate-wrap"><div class="rate-bar" style="width:20%;background:#dc3545"></div><input class="rate-input" type="number" min="0" max="100" value="20" oninput="updateRate(this)"></div></td>
   <td class="deadline-cell">2026/06/30</td>
   <td class="rag-cell"><span class="rag-badge" style="background:#adb5bd">⚪ 本週無資料</span></td>
   <td class="blocker-cell"><span class="no-blocker">—</span></td>
+  <td class="action-cell"><button class="edit-btn" onclick="startEdit(this)">✏️ 編輯</button></td>
+</tr>
+
+<tr class="row-none" data-row-key="fdb024080c" data-rag="" data-rate="20">
+  <td class="cat-cell" rowspan="1"><span class="cat-label">許可系統</span></td>
+  <td>即使管理各項許可的到期性與追蹤</td>
+  <td class="goal-cell">1.各項許可到期日可追蹤<br>2.提供下載專區，減少專責人員作業時間</td>
+  <td class="owner-cell">信佳</td>
+  <td class="result-cell">—</td>
+  <td class="rate-cell"><div class="rate-wrap"><div class="rate-bar" style="width:20%;background:#dc3545"></div><input class="rate-input" type="number" min="0" max="100" value="20" oninput="updateRate(this)"></div></td>
+  <td class="deadline-cell">2026/06/30</td>
+  <td class="rag-cell"><span class="rag-badge" style="background:#adb5bd">⚪ 本週無資料</span></td>
+  <td class="blocker-cell"><span class="no-blocker">—</span></td>
+  <td class="action-cell"><button class="edit-btn" onclick="startEdit(this)">✏️ 編輯</button></td>
+</tr>
+
+<tr class="row-yellow" data-row-key="40d0b45708" data-rag="待改善" data-rate="30">
+  <td class="cat-cell" rowspan="1"><span class="cat-label">職安(OHS)系統</span></td>
+  <td>減少職安人員行政作業時間(80時/月)</td>
+  <td class="goal-cell">1.腳本自動鑑別並更新職安相關法規<br>2.AI問答機器人提供前端作業主管/人員隨時辨識及評估風險，並自動生成改善建議<br>3.每日自動抓取工安情報及新聞，供同仁瀏覽並留存作為訓練之教材<br>4.串連BPM分析公司工傷事故<br>5.職護臨場服務名單自動篩選並發送通知、並進行健康追蹤<br>6.承攬商管理線上化<br>7.現場6S點檢結合OCR自動評分，未來作為競賽或獎金基準</td>
+  <td class="owner-cell">佑毓</td>
+  <td class="result-cell">本週日誌未明確提及腳本自動鑑別與更新職安法規的直接進度。主要工作集中在職安教材網頁化、新系統架構與既有系統問題排除。</td>
+  <td class="rate-cell"><div class="rate-wrap"><div class="rate-bar" style="width:30%;background:#dc3545"></div><input class="rate-input" type="number" min="0" max="100" value="30" oninput="updateRate(this)"></div></td>
+  <td class="deadline-cell">2026/06/30</td>
+  <td class="rag-cell"><span class="rag-badge" style="background:#e6a800">🟡 待改善</span></td>
+  <td class="blocker-cell"><span class="no-blocker">—</span></td>
+  <td class="action-cell"><button class="edit-btn" onclick="startEdit(this)">✏️ 編輯</button></td>
 </tr>
 
     </tbody>
@@ -458,8 +500,28 @@
 
 <!-- 頁尾 -->
 <footer class="page-footer">
-  本報告由 Gemini 2.5 Flash 自動分析日誌產生，供主管參考使用 ｜ 2026-05-28 14:47
+  本報告由 Gemini 2.5 Flash 自動分析日誌產生，供主管參考使用 ｜ 2026-06-10 09:32
 </footer>
+
+<script>
+  function downloadHTML() {
+    /* 下載當前頁面完整 HTML */
+    var html = document.documentElement.outerHTML;
+    var blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    var today = new Date();
+    var y = today.getFullYear();
+    var m = String(today.getMonth() + 1).padStart(2, '0');
+    var d = String(today.getDate()).padStart(2, '0');
+    a.download = '人資部週追蹤報告_' + y + m + d + '.html';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+</script>
 
 </body>
 </html>
