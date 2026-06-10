@@ -17,6 +17,10 @@ if ($LASTEXITCODE -ne 0) { "[ERROR] weekly_summary.py failed" | Out-File $LOG_FI
 & $PYTHON "$BASE_DIR\hr_tracker.py" 2>&1 | Out-File $LOG_FILE -Append -Encoding UTF8
 if ($LASTEXITCODE -ne 0) { "[ERROR] hr_tracker.py failed" | Out-File $LOG_FILE -Append; exit 1 }
 "[Step 3] Done" | Out-File $LOG_FILE -Append -Encoding UTF8
+"[Step SP] sharepoint_archive.py ..." | Out-File $LOG_FILE -Append -Encoding UTF8
+& $PYTHON "$BASE_DIR\sharepoint_archive.py" 2>&1 | Out-File $LOG_FILE -Append -Encoding UTF8
+if ($LASTEXITCODE -ne 0) { "[WARN] sharepoint_archive.py failed (continue)" | Out-File $LOG_FILE -Append -Encoding UTF8 }
+"[Step SP] Done" | Out-File $LOG_FILE -Append -Encoding UTF8
 "[Step 4] git commit ..." | Out-File $LOG_FILE -Append -Encoding UTF8
 $week = Get-Date -Format "MM/dd"
 git -C $BASE_DIR add report.html weekly_dashboard.html hr_weekly_report.html 2>&1 | Out-File $LOG_FILE -Append -Encoding UTF8
