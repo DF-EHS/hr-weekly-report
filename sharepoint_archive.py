@@ -30,8 +30,8 @@ SP_DIR = (
     / "人資部"
 )
 
-# 只上傳這兩種附檔（排除範本與備份檔，靠檔名的「(週期)」括號過濾）
-EXTS = ("html", "xlsx")
+# 只上傳 html（xlsx 由使用者自行手動維護，自動化不碰）
+EXTS = ("html",)
 
 
 def latest_report(ext: str) -> Path | None:
